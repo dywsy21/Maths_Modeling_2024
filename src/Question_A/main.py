@@ -21,6 +21,7 @@ def calculate_spiral_params(t):
     return r, theta
 
 # 计算板凳龙各节的初始相对位置（假设每节长度为220 cm或341 cm）
+
 lengths = [3.41] + [2.20]*221 + [2.20]  # 单位：米，龙头为3.41米，龙身为220节，龙尾为1节
 positions_x = []
 positions_y = []
