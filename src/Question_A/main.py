@@ -2,18 +2,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 螺旋线参数
-p = 0.55  # 螺距 55 cm (转换为米)
+p = 0.55  # 螺距 55 cm
 v_head = 1.0  # 龙头前把手速度 1 m/s
-r_initial = 5.0  # 初始半径，假设
+initial_turns = 16  # 初始龙头在第16圈
+
+# 初始角度和半径
+theta_initial = 2 * np.pi * initial_turns  # 初始角度对应16圈
+r_initial = (p / (2 * np.pi)) * theta_initial  # 初始半径对应16圈
 
 # 时间
 t_max = 300  # 总时间为300秒
 time_steps = np.linspace(0, t_max, t_max+1)  # 每秒计算一个位置
 
-# 计算螺旋线的半径和角度变化
+# 等距螺线的角度与半径关系
 def calculate_spiral_params(t):
-    theta = 2 * np.pi * t / p  # 螺旋角度，随时间均匀变化
-    r = r_initial + v_head * t  # 随时间线性增加的半径
+    theta = theta_initial - (v_head / p) * t  # 角度减少，代表逆时针向内回旋
+    r = (p / (2 * np.pi)) * theta  # 等距螺线的半径
     return r, theta
 
 # 计算板凳龙各节的初始相对位置（假设每节长度为220 cm或341 cm）
@@ -43,13 +47,13 @@ def plot_dragon(time_index):
     plt.xlabel('x (m)')
     plt.ylabel('y (m)')
     plt.grid(True)
+    plt.axis('equal')  # 保持x轴和y轴比例相同
     plt.show()
 
-if __name__ == '__main__':
-    # 绘制特定时间点的舞龙位置
-    plot_dragon(0)    # t = 0 s
-    plot_dragon(60)   # t = 60 s
-    plot_dragon(120)  # t = 120 s
-    plot_dragon(180)  # t = 180 s
-    plot_dragon(240)  # t = 240 s
-    plot_dragon(300)  # t = 300 s
+# 绘制特定时间点的舞龙位置
+plot_dragon(0)    # t = 0 s
+plot_dragon(60)   # t = 60 s
+plot_dragon(120)  # t = 120 s
+plot_dragon(180)  # t = 180 s
+plot_dragon(240)  # t = 240 s
+plot_dragon(300)  # t = 300 s
