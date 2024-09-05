@@ -17,7 +17,7 @@ time_steps = np.linspace(0, t_max, t_max+1)  # 每秒计算一个位置
 # 等距螺线的角度与半径关系
 def calculate_spiral_params(t):
     theta = theta_initial + (v_head / p) * t  # 角度增加，代表顺时针向内回旋
-    r = (p / (2 * np.pi)) * theta  # 等距螺线的半径
+    r = r_initial - (v_head / p) * t  # 半径减少，代表向内回旋
     return r, theta
 
 # 计算板凳龙各节的初始相对位置（假设每节长度为220 cm或341 cm）
