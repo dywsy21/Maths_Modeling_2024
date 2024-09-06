@@ -61,8 +61,9 @@ def optimize_planting_strategy():
         for land_season in land_seasons:
             land_season = land_season.split(':')
             land = land_season[0]
-            seasons = land_season[1].split(' ')
-            land_seasons_dict[land] = seasons
+            if len(land_season) > 1:
+                seasons = land_season[1].split(' ')
+                land_seasons_dict[land] = seasons
             
         for year in years:
             for land in land_types:
