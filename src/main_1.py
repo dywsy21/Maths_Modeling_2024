@@ -35,7 +35,14 @@ def main(reduction_factor=0, index=1):
     for v in model.variables():
         print(f"{v.name} = {v.varValue}")
 
+    # Solve the model
     model.solve()
+
+    # Check the status of the solution
+    print(f"Status: {model.status}, {LpProblem.status[model.status]}")
+
+    # Print the objective value
+    print(f"Objective value: {model.objective.value()}")
 
     # Output results
     results = {year: {crop: {land: planting_area[crop][land][year] for land in land_types} for crop in crops} for year in years}
