@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum
+from lib import *
 
 def optimize_planting_strategy_question2():
     # Define the problem
-    model = LpProblem(name="planting-strategy-question2", sense=LpMaximize)
+    model, expected_sales_volume = optimize_planting_strategy()
 
     # Load crop and land data from CSV files
     crops_data = pd.read_csv('附件/附件(csv)/附件1_乡村种植的农作物.csv', encoding='utf-8-sig')
@@ -55,13 +56,6 @@ def optimize_planting_strategy_question2():
         else:
             return 1 + np.random.uniform(-0.05, 0.05)  # 其他作物±5%波动
 
-    # Add constraints for each year and land type
-    for index, row in land_data.iterrows():
-        land_type = row['地块类型']
-        land_area = row['地块面积/亩']
-        for year in years:
-            for season in seasons:
-                model += lpSum(planting_area[crop][land_type][year][season] for crop in crops) <= land_area
 
     # Revised objective function with uncertainties and dynamic factors
     model += lpSum(
@@ -80,5 +74,5 @@ def optimize_planting_strategy_question2():
     df = pd.DataFrame(results)
     df.to_excel("result2.xlsx")
 
-if __name__ == "__main__":
-    optimize_planting_strategy_question2()
+# if __name__ == "__main__":
+optimize_planting_strategy_question2()
