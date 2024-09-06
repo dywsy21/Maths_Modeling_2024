@@ -95,11 +95,6 @@ def optimize_planting_strategy():
         for crop in crops for land in land_types for year in years
     )
 
-    # Add constraints to ensure total production does not exceed expected sales volume
-    for crop in crops:
-        for year in years:
-            total_production = lpSum(planting_area[crop][land][year] * data_2023.loc[data_2023['作物名称'] == crop, '亩产量/斤'].values[0] for land in land_types)
-            model += total_production <= expected_sales_volume[crop]
     model.solve()
 
     # Output results
