@@ -19,9 +19,18 @@ def add_from_file_2():
     the_csv_to_be_appended['销售单价/(元/斤)'] = the_csv_to_be_appended.apply(lambda row: land_type_mapping3.get((row['作物名称'], row['地块类型'], row['种植季次'])), axis=1)
     # (2) 智慧大棚第一季可种植的蔬菜作物及其亩产量、种植成本和销售价格均与普通大棚相同，表中省略。
     # apply this logic to the data
-    the_csv_to_be_appended.loc[(the_csv_to_be_appended['地块类型'] == '智慧大棚') & (the_csv_to_be_appended['种植季次'] == '第一季'), '亩产量/斤'] = the_csv_to_be_appended.loc[(the_csv_to_be_appended['地块类型'] == '普通大棚') & (the_csv_to_be_appended['种植季次'] == '第一季'), '亩产量/斤'].values
-    the_csv_to_be_appended.loc[(the_csv_to_be_appended['地块类型'] == '智慧大棚') & (the_csv_to_be_appended['种植季次'] == '第一季'), '种植成本/(元/亩)'] = the_csv_to_be_appended.loc[(the_csv_to_be_appended['地块类型'] == '普通大棚') & (the_csv_to_be_appended['种植季次'] == '第一季'), '种植成本/(元/亩)'].values
-    the_csv_to_be_appended.loc[(the_csv_to_be_appended['地块类型'] == '智慧大棚') & (the_csv_to_be_appended['种植季次'] == '第一季'), '销售单价/(元/斤)'] = the_csv_to_be_appended.loc[(the_csv_to_be_appended['地块类型'] == '普通大棚') & (the_csv_to_be_appended['种植季次'] == '第一季'), '销售单价/(元/斤)'].values
+    for column in ['亩产量/斤', '种植成本/(元/亩)', '销售单价/(元/斤)']:
+        ordinary_values = the_csv_to_be_appended.loc[
+            (the_csv_to_be_appended['地块类型'] == '普通大棚') & 
+            (the_csv_to_be_appended['种植季次'] == '第一季'), column
+        ].values
+        the_csv_to_be_appended.loc[
+            (the_csv_to_be_appended['地块类型'] == '智慧大棚') & 
+            (the_csv_to_be_appended['种植季次'] == '第一季'), column
+        ] = ordinary_values[:len(the_csv_to_be_appended.loc[
+            (the_csv_to_be_appended['地块类型'] == '智慧大棚') & 
+            (the_csv_to_be_appended['种植季次'] == '第一季')
+        ])]
 
 
 def calculate_expected_sales_volume():
