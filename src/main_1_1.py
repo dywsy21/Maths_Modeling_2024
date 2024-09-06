@@ -105,6 +105,7 @@ def optimize_planting_strategy():
             low, high = map(float, price_range.split('-'))
             return (low + high) / 2
         return float(price_range)
+    
     model += lpSum(
         planting_area[crop][land][year][season] * (
             get_average_price(data_2023.loc[data_2023['作物名称'] == crop, '销售单价/(元/斤)'].values[0]) *
