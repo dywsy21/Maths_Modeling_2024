@@ -20,19 +20,20 @@ def add_from_file_2():
     # (2) 智慧大棚第一季可种植的蔬菜作物及其亩产量、种植成本和销售价格均与普通大棚相同，表中省略。
     # apply this logic to the data
     for column in ['亩产量/斤', '种植成本/(元/亩)', '销售单价/(元/斤)']:
-        ordinary_values = the_csv_to_be_appended[
+        ordinary_rows = the_csv_to_be_appended[
             (the_csv_to_be_appended['地块类型'] == '普通大棚') & 
             (the_csv_to_be_appended['种植季次'] == '第一季')
-        ][column].reset_index(drop=True)
-        
-        smart_indices = the_csv_to_be_appended[
+        ]
+
+        for idx, smart_row in the_csv_to_be_appended[
             (the_csv_to_be_appended['地块类型'] == '智慧大棚') & 
             (the_csv_to_be_appended['种植季次'] == '第一季')
-        ].index
-        
-        for i, idx in enumerate(smart_indices):
-            if i < len(ordinary_values):
-                the_csv_to_be_appended.at[idx, column] = ordinary_values[i]
+        ].iterrows():
+            matching_ordinary_row = ordinary_rows[
+                ordinary_rows['作物名称'] == smart_row['作物名称']
+            ]
+            if not matching_ordinary_row.empty:
+                the_csv_to_be_appended.at[idx, column] = matching_ordinary_row.iloc[0][column]
 
 
 def calculate_expected_sales_volume():
