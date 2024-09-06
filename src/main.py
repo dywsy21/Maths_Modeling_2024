@@ -69,13 +69,16 @@ def optimize_planting_strategy():
                 for season in range(2):  # Two seasons
                     model += lpSum(planting_area[crop][land][year + season] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop) >= 0
     
-    #! TODO: revise the objective function
-    # Assuming crops_data contains columns for '销售价格', '亩产量', and '种植成本'
+    # Revise the objective function using data from 附件2_2023年统计的相关数据.csv
+    # Load the 2023 data
+    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv')
+
+    # Define the objective function to maximize profit
     model += lpSum(
         planting_area[crop][land][year] * (
-            crops_data.loc[crops_data['作物名称'] == crop, '销售价格'].values[0] *
-            crops_data.loc[crops_data['作物名称'] == crop, '亩产量'].values[0] -
-            crops_data.loc[crops_data['作物名称'] == crop, '种植成本'].values[0]
+            data_2023.loc[data_2023['作物名称'] == crop, '销售单价/(元/斤)'].values[0] *
+            data_2023.loc[data_2023['作物名称'] == crop, '亩产量/斤'].values[0] -
+            data_2023.loc[data_2023['作物名称'] == crop, '种植成本/(元/亩)'].values[0]
         )
         for crop in crops for land in land_types for year in years
     )
