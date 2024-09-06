@@ -1,0 +1,90 @@
+\documentclass{ctexart}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{函数专题}
+\author{Siyuan Zhou}
+
+\begin{document}
+\maketitle
+
+\section*{周期性（易和三角函数结合考察）}
+
+\subsection*{定义:}
+\textbf{周期函数、周期}：对于定义在$\mathbb{D}$上的函数$f(x)$，若存在非零常数$T$，使得$\forall x \in \mathbb{D}: f(x+T) = f(x)$，则称$f(x)$为周期函数，$T$称为$f(x)$的一个周期。\\
+\par
+\textbf{最小正周期}：对于周期函数$f(x)$，若在其所有周期中，存在最小正数$T_0$，则称$T_0$为$f(x)$的最小正周期。
+
+\subsection*{例题:}
+\begin{enumerate}
+  \item $f(x)=\sin(x^2)$ 是周期函数吗？若是，给出其周期；若不是，证明之。
+  \vspace{20mm}
+  \item $f(x)=\sin(x) + \sin(\sqrt{2}x)$ 是周期函数吗？若是，给出其周期；若不是，证明之。\\
+    推广：$f(x)=\sin(\omega_1x) + \sin(\omega_2x)$ 为周期函数 $(\omega_1,\omega_2 \neq 0) \Leftrightarrow \frac{\omega_1}{\omega_2} \in \mathbb{Q}$
+    \vspace{20mm}
+  \item 函数 $f, g$ 定义在 $\mathbb{R}$ 上且互逆，即对任意 $x, y \in \mathbb{R}$, 有 $g(f(x)) = x, f(g(y)) = y$ 成立。设 $f$ 可以写成线性函数与周期函数之和 $f(x) = kx + h(x)$, $k$ 为常数, $h(x)$ 为周期函数。求证：$g$ 也可以写成线性函数与周期函数之和。
+  \vspace{60mm}
+  \item 已知 $f(x), g(x)$ 均为 $\mathbb{R}$ 上的周期函数，且有 $|f(x) - g(x)| \leq (\frac{1}{2})^x$ 对 $x \in \mathbb{R}$ 恒成立，求证：$f(x) \equiv g(x)$。
+  \vspace{100mm}
+  \item 证明：函数 $f(x) = 2^x + 3^x + 9^x$ 不能表示为有限个周期函数的和。
+\end{enumerate}
+\vspace{40mm}
+
+\newpage
+\section*{奇偶性}
+\subsection*{定义：}
+\subsubsection*{\textbf{偶函数:}}
+定义在$\mathbb{D}$上的函数$f(x)$，满足$\forall x \in \mathbb{D}$，都有$f(-x) = f(x)$，则$f(x)$为偶函数。\\
+- \textbf{直观理解:} 图像关于y轴对称，定义域关于原点对称。
+
+\subsubsection*{\textbf{奇函数:}}
+定义在$\mathbb{D}$上的函数$f(x)$，满足$\forall x \in \mathbb{D}$，都有$f(-x) = -f(x)$，则$f(x)$为奇函数。\\
+- \textbf{直观理解:} 图像关于原点对称，定义域关于原点对称。
+
+\subsection*{例题:}
+\begin{enumerate}
+  \item 已知 $f(x)$ 是定义在 $\{x | x \neq 0, x \in \mathbb{R}\}$ 上的偶函数，当 $x > 0$ 时，$f(x) = x^2 - x + 1$，求 $f(x)$ 的解析式。
+  \vspace{20mm}
+  \item 已知 $f(x)$ 是定义在 $\{x | x \neq 0, x \in \mathbb{R}\}$ 上的奇函数，当 $x > 0$ 时，$f(x) = x^2 - x + 1$，求 $f(x)$ 的解析式。
+  \vspace{20mm}
+  \item 证明: 任何一个定义在 $\mathbb{R}$ 上的函数 $f(x)$ 都可以表示为一个奇函数和一个偶函数的和。
+  \vspace{40mm}
+  \item 已知 $f(x)$ 是定义在非零实数上的函数，$\forall x,y \in \mathbb{R}: f(xy) = f(x) + f(y) - 2$，求证: $f(x)$ 为偶函数。
+\end{enumerate}
+
+\newpage
+\section*{单调性}
+\subsection*{定义：}
+\subsubsection*{\textbf{单调:}}
+设函数 $f(x)$ 的定义域为 $\mathbb{D}$，区间 $I \subseteq \mathbb{D}$，若对所有 $x_1, x_2 \in I$，$x_1 < x_2$，都有 $f(x_1) \leq f(x_2)$，则称 $f(x)$ 在 $I$ 上是（单调）增函数。
+
+设函数 $f(x)$ 的定义域为 $\mathbb{D}$，区间 $I \subseteq \mathbb{D}$，若对所有 $x_1, x_2 \in I$，$x_1 < x_2$，都有 $f(x_2) \leq f(x_1)$，则称 $f(x)$ 在 $I$ 上是（单调）减函数。
+
+\subsubsection*{\textbf{严格单调:}}
+设函数 $f(x)$ 的定义域为 $\mathbb{D}$，区间 $I \subseteq \mathbb{D}$，若对所有 $x_1, x_2 \in I$，$x_1 < x_2$，都有 $f(x_1) < f(x_2)$，则称 $f(x)$ 在 $I$ 上是严格（单调）增函数。
+
+设函数 $f(x)$ 的定义域为 $\mathbb{D}$，区间 $I \subseteq \mathbb{D}$，若对所有 $x_1, x_2 \in I$，$x_1 < x_2$，都有 $f(x_2) < f(x_1)$，则称 $f(x)$ 在 $I$ 上是严格（单调）减函数。
+
+\subsection*{例题:}
+\begin{enumerate}
+  \item 已知 $f(x) = x + \frac{a}{x}$ 在区间 $[2,+\infty)$ 上是严格增函数，求 $a$ 的范围？
+  \vspace{40mm}
+  \item 求函数 $f(x) = x^2 + \frac{1}{x}$ 的单调区间？
+  \vspace{40mm}
+  \item 已知 $f(x) = \sqrt{x^2 + 1} - ax$ 在 $x \in [0,+\infty)$ 是单调函数，求 $a$ 的范围？
+  \vspace{40mm}
+\end{enumerate}
+
+\end{document}
