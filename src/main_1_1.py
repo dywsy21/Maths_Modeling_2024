@@ -10,3 +10,5 @@ def main():
 
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
+    # Create a sole decision variable: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season]
+    x = LpVariable.dicts
