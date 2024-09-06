@@ -53,13 +53,22 @@ def optimize_planting_strategy():
     for index, row in crops_data.iterrows():
         crop_name = row['作物名称']
         crop_type = row['作物类型']
-        suitable_land = str(row['种植耕地']).split('\n') if isinstance(row['种植耕地'], str) else []
-        print("crop_name", crop_name ,"suitable_land: ", suitable_land)
+        
+        text: str = row['种植耕地']
+        land_seasons = text.split(';')
+        land_seasons_dict: dict = {}
+        for land_season in land_seasons:
+            land_season = land_season.split(':')
+            land = land_season[0]
+            seasons = land_season[1].split(' ')
+            land_seasons_dict[land] = seasons
+            
         for year in years:
             for land in land_types:
-                if land not in suitable_land:
-                    for season in seasons:
-                        model += planting_area[crop_name][land][year][season] == 0
+                if land in land_seasons_dict:
+                    seasons = land_seasons_dict[land]
+                else:
+                    seasons = ["第一季", "第二季"]
                 # Constraint for single-season grain crops (excluding rice) on specific land types, (1)
                 if crop_type == '粮食' and crop_name != '水稻' and land in ['平旱地', '梯田', '山坡地']:
                     for season in seasons:

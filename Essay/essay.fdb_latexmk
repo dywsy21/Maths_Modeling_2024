@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex essay"] 1725605113 "essay.aux" "essay.bbl" "essay" 1725605113 2
+["bibtex essay"] 1725606723 "essay.aux" "essay.bbl" "essay" 1725606723 2
   "./sample.bib" 1725592798 244 0810be99547e6f3295f454437e22fee4 ""
   "e:/texlive/2023/texmf-dist/bibtex/bst/base/alpha.bst" 1697284106 23907 a5f93555796fb564b924339521f10a7c ""
-  "essay.aux" 1725605113 34 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "essay.aux" 1725606723 34 3985256e7290058c681f74d7a3565a19 "pdflatex"
   (generated)
   "essay.bbl"
   "essay.blg"
   (rewritten before read)
-["pdflatex"] 1725605110 "e:/Folder Collection/Maths_Modeling_2024/Essay/essay.tex" "essay.pdf" "essay" 1725605112 2
+["pdflatex"] 1725606720 "e:/Folder Collection/Maths_Modeling_2024/Essay/essay.tex" "essay.pdf" "essay" 1725606721 2
   "c:/Windows/Fonts/msyh.ttc" 1690106883 19701556 07c864a5b15e68fa47639738197fae38 ""
   "c:/Windows/Fonts/simhei.ttf" 1651842600 9753388 6abc0fcfbaa40600f9cecca3afeb3aa7 ""
   "c:/Windows/Fonts/simsun.ttc" 1690106883 18008680 490583a172d4371a68d1e0526a6bca81 ""
@@ -33,17 +33,13 @@
   "e:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm" 1697284174 1124 6c73e740cf17375f03eec0ee63599741 ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmsy6.tfm" 1697284174 1116 933a60c408fc0a863a92debe84b2d294 ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm" 1697284174 1120 8b7d695260f3cff42e636090a8002094 ""
-  "e:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1697284174 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei4e.tfm" 1697285219 1172 2d5e87dd6ec409d864e1fe1662d00646 ""
-  "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei53.tfm" 1697285219 1172 a5c37c86ae9131b27b9c0199f3d12df2 ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei5f.tfm" 1697285219 1172 7048f0a8b693444590781debe54eecbd ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei64.tfm" 1697285219 1172 abd4be36b7787f9979caadfeef9cdae5 ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei65.tfm" 1697285219 1172 c34b1545992ab0d7393a03f889ceeb86 ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei67.tfm" 1697285219 1172 127372bbba8b4f4a65a26e565c0c6a2e ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei6c.tfm" 1697285219 1172 7dd7a6f05321dd25f399ebba47f53887 ""
-  "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei73.tfm" 1697285219 1172 04594028df286605c5e043f49c67e7c6 ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei7e.tfm" 1697285219 1172 fc758d34799896087d8800c18ce979f8 ""
-  "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei80.tfm" 1697285219 1172 7c53005410278de6d612480963dd5ced ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei89.tfm" 1697285219 1172 364fffd8ea27d98d6edb9222bf84c180 ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei8a.tfm" 1697285219 1172 b8090cf7ab844b8c390669cbe8997c0c ""
   "e:/texlive/2023/texmf-dist/fonts/tfm/zhmetrics/unihei/unihei8b.tfm" 1697285219 1172 bdf00141a2e7bd9848cfb6dae5c7e1ef ""
@@ -110,7 +106,6 @@
   "e:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1697284039 35752 024fb6c41858982481f6968b5fc26508 ""
   "e:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1697284039 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "e:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb" 1697284039 33993 9b89b85fd2d9df0482bd47194d1d3bf3 ""
-  "e:/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1697284039 37944 359e864bd06cde3b1cf57bb20757fb06 ""
   "e:/texlive/2023/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1697284665 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "e:/texlive/2023/texmf-dist/tex/generic/atbegshi/atbegshi.sty" 1697284061 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
   "e:/texlive/2023/texmf-dist/tex/generic/babel/babel.sty" 1697284069 151363 1f5971af3ef874d432e8fb43e0edb71d ""
@@ -201,8 +196,8 @@
   "e:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1697285234 4596491 0fbf95c3f93c9cb625ad9243c3688444 ""
   "e:/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1697285286 6507885 1e4c815e4ff3ba2f14e1ddb74b23f64a ""
   "e:/texlive/2023/texmf.cnf" 1697285225 713 e69b156964470283e0530f5060668171 ""
-  "essay.aux" 1725605113 34 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "essay.bbl" 1725605113 0 d41d8cd98f00b204e9800998ecf8427e "bibtex essay"
+  "essay.aux" 1725606723 34 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "essay.bbl" 1725606723 0 d41d8cd98f00b204e9800998ecf8427e "bibtex essay"
   "essay.out" 0 -1 0 "pdflatex"
   "essay.tex" 1725605109 2049 0be15d3f5f3c2686317a279b7f5d1531 ""
   (generated)
