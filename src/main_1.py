@@ -26,6 +26,15 @@ def main(reduction_factor=0, index=1):
         for crop in crops for land in land_types for year in years for season in seasons
     )
 
+    # Debug: Print model information
+    print("Model constraints:")
+    for name, constraint in model.constraints.items():
+        print(f"{name}: {constraint}")
+
+    print("\nDecision variables:")
+    for v in model.variables():
+        print(f"{v.name} = {v.varValue}")
+
     model.solve()
 
     # Output results
