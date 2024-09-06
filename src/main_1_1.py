@@ -27,9 +27,10 @@ def optimize_planting_strategy():
 
     # Calculate expected sales volume for each crop
     expected_sales_volume = {}
-    for index, row in planting_data_2023.iterrows():
-        crop_name = row['作物名称']
-        planting_area_2023 = row['种植面积/亩']
+    # Sum the planting areas for each crop
+    total_planting_area = planting_data_2023.groupby('作物名称')['种植面积/亩'].sum()
+
+    for crop_name, planting_area_2023 in total_planting_area.items():
         yield_per_mu = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
         expected_sales_volume[crop_name] = planting_area_2023 * yield_per_mu
     for index, row in land_data.iterrows():
