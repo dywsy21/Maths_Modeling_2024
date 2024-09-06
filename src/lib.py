@@ -46,6 +46,7 @@ def optimize_planting_strategy():
         land_type = row['地块类型']
         land_area = row['地块面积/亩']
         for year in years:
+            global seasons
             for season in seasons:
                 model += lpSum(planting_area[crop][land_type][year][season] for crop in crops) <= land_area
 
