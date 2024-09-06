@@ -37,11 +37,21 @@ def optimize_planting_strategy():
                 # Constraint for single-season grain crops (excluding rice) on specific land types, (1)
                 if crop_type == '粮食' and crop_name != '水稻' and land in ['平旱地', '梯田', '山坡地']:
                     model += lpSum(planting_area[crop_name][land][year] for crop_name in crops if crop_type == '粮食' and crop_name != '水稻') <= 1
-                # Constraint for irrigated land: either single-season rice or two-season vegetables, (2)
+                # Constraint for irrigated land: either single-season rice or two-season vegetables, (2) and (3)
                 if land == '水浇地':
                     rice_area = planting_area['水稻'][land][year]
                     vegetable_area = lpSum(planting_area[crop][land][year] for crop in crops if crop_type == '蔬菜')
                     model += (rice_area == 0) | (vegetable_area == 0)
+
+                    # If two seasons of vegetables are planted
+                    if vegetable_area > 0:
+                        # First season: exclude cabbage, white radish, and red radish
+                        first_season_vegetables = lpSum(planting_area[crop][land][year] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'])
+                        model += first_season_vegetables >= 0
+
+                        # Second season: only one of cabbage, white radish, or red radish
+                        second_season_vegetables = lpSum(planting_area[crop][land][year] for crop in ['大白菜', '白萝卜', '红萝卜'])
+                        model += second_season_vegetables <= 1
 
     # Objective function (maximize profit)
     model += lpSum(planting_area[crop][land][year] * 100 for crop in crops for land in land_types for year in years)  # Example
