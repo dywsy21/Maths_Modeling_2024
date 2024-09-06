@@ -28,11 +28,15 @@ def optimize_planting_strategy():
     # Add crop-specific constraints
     for index, row in crops_data.iterrows():
         crop_name = row['作物名称']
+        crop_type = row['作物类型']
         suitable_land = row['种植耕地'].split('\n')
         for year in years:
             for land in land_types:
                 if land not in suitable_land:
                     model += planting_area[crop_name][land][year] == 0
+                # Constraint for single-season grain crops (excluding rice) on specific land types
+                if crop_type == '粮食' and crop_name != '水稻' and land in ['平旱地', '梯田', '山坡地']:
+                    model += lpSum(planting_area[crop_name][land][year] for crop_name in crops if crop_type == '粮食' and crop_name != '水稻') <= 1
 
     # Objective function (maximize profit)
     model += lpSum(planting_area[crop][land][year] * 100 for crop in crops for land in land_types for year in years)  # Example
