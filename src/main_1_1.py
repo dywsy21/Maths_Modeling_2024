@@ -4,27 +4,8 @@ from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
 def main():
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
+
     years = list(range(2024, 2031))
-
-    crop_to_condition = {}
-    for i, row in file2.iterrows():
-        text: str = row['种植耕地']
-        land_seasons = text.split(';')
-        land_seasons_dict: dict = {}
-        for land_season in land_seasons:
-            land_season = land_season.split(':')
-            land = land_season[0]
-            if len(land_season) > 1:
-                seasons = land_season[1].split(' ')
-                land_seasons_dict[land] = seasons
-            else:
-                land_seasons_dict[land] = ["第一季", "第二季"]
-        crop_to_condition[row['作物名称']] = land_seasons_dict
-        
-
-        
-    
-    # create dict of land areas
     region_areas = dict(zip(full_table['种植地块'],full_table['种植面积/亩']))
 
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
@@ -60,7 +41,8 @@ def main():
     # 9. 每种作物每季的种植地不能太分散。
 
 
-    # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。
+    # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%
+
 
     # 11. 不能超出地块面积
     for region in full_table['种植地块']:
@@ -68,6 +50,22 @@ def main():
             linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'] 
                                   for season in season in full_table['种植季次'].unique()) <= region_areas[region]
 
+
+    # 12. 每种作物须满足相应的种植条件
+    crop_to_condition = {}
+    for i, row in file2.iterrows():
+        text: str = row['种植耕地']
+        land_seasons = text.split(';')
+        land_seasons_dict: dict = {}
+        for land_season in land_seasons:
+            land_season = land_season.split(':')
+            land = land_season[0]
+            if len(land_season) > 1:
+                seasons = land_season[1].split(' ')
+                land_seasons_dict[land] = seasons
+            else:
+                land_seasons_dict[land] = ["第一季", "第二季"]
+        crop_to_condition[row['作物名称']] = land_seasons_dict
 
 if __name__ == '__main__':
     main()
