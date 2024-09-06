@@ -22,7 +22,12 @@ def optimize_planting_strategy_question2():
 
     # Helper function to get the dynamic price based on year and crop type
     def get_dynamic_price(crop_name, year):
-        base_price = data_2023.loc[data_2023['作物名称'] == crop_name, '销售单价/(元/斤)'].values[0]
+        try:
+            base_price = data_2023.loc[data_2023['作物名称'] == crop_name, '销售单价/(元/斤)'].values[0]
+        except IndexError:
+            print(f"Warning: No price data found for crop '{crop_name}'")
+            base_price = 0  # 如果找不到作物价格，则设置为0
+
         if '粮食' in crop_name:
             return base_price  # 粮食类价格稳定
         elif '蔬菜' in crop_name:
@@ -32,10 +37,15 @@ def optimize_planting_strategy_question2():
                 return base_price * (1 - 0.05 * (year - 2023))  # 羊肚菌每年下降5%
             else:
                 return base_price * (1 - np.random.uniform(0.01, 0.05) * (year - 2023))  # 其他食用菌下降1%-5%
-    
+
     # Helper function to simulate the uncertain yield per acre
     def get_dynamic_yield(crop_name):
-        base_yield = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
+        try:
+            base_yield = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
+        except IndexError:
+            print(f"Warning: No yield data found for crop '{crop_name}'")
+            base_yield = 0  # 如果找不到作物亩产量，则设置为0
+
         return base_yield * np.random.uniform(0.9, 1.1)  # 亩产量每年波动±10%
 
     # Helper function to calculate expected sales volume growth
@@ -59,7 +69,7 @@ def optimize_planting_strategy_question2():
             get_dynamic_price(crop, year) * get_dynamic_yield(crop) * get_sales_volume_growth(crop, year)
             - data_2023.loc[data_2023['作物名称'] == crop, '种植成本/(元/亩)'].values[0] * (1 + 0.05 * (year - 2023))  # 每年成本增加5%
         )
-        for crop in crops for land in land_types for year in years for season in seasons  # Make sure season is included
+        for crop in crops for land in land_types for year in years for season in seasons
     )
 
     # Solve the model
