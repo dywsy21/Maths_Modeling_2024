@@ -64,7 +64,7 @@ def optimize_planting_strategy():
                         model += lpSum(planting_area[crop_name][land][year][season] for crop_name in crops if crop_type == '粮食' and crop_name != '水稻') <= 1
                 # Constraint for irrigated land: either single-season rice or two-season vegetables, (2) and (3)
                 if land == '水浇地':
-                    rice_area = planting_area['水稻'][land][year]["单季"]
+                    rice_area = planting_area['水稻'][land][year]["第一季"]
                     vegetable_area = lpSum(planting_area[crop][land][year][season] for crop in crops if crop_type == '蔬菜' for season in seasons)
                     model += (rice_area == 0) | (vegetable_area == 0)
 
