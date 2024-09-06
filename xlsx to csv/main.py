@@ -9,7 +9,7 @@ def transform(file_name):
     data = pd.ExcelFile(file_name)
     for sheet_name in data.sheet_names:
         data = pd.read_excel(file_name, sheet_name = sheet_name)
-        data.to_csv(file_name[:-5] + '_' + sheet_name + '.csv', index = False)
+        data.to_csv(file_name[:-5] + '_' + sheet_name + '.csv', index = False, encoding='utf-8')
 
 if __name__ == "__main__":
     for file in os.listdir("xlsx_files"):
