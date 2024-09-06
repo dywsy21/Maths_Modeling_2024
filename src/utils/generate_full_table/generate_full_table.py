@@ -34,6 +34,9 @@ def add_from_file_2():
             ]
             if not matching_ordinary_row.empty:
                 the_csv_to_be_appended.at[idx, column] = matching_ordinary_row.iloc[0][column]
+            else:
+                # If no match is found, retain the existing data
+                the_csv_to_be_appended.at[idx, column] = smart_row[column]
 
 
 def calculate_expected_sales_volume():
