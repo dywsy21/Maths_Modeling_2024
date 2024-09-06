@@ -20,9 +20,9 @@ def optimize_planting_strategy():
 
     # Load the 2023 data
     data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
-
+    
     # Debug: Print column names to verify
-    print("Columns in data_2023:", data_2023.columns)
+    # print("Columns in data_2023:", data_2023.columns)
     planting_data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv', encoding='utf-8-sig')
 
     # Calculate expected sales volume for each crop
@@ -30,7 +30,10 @@ def optimize_planting_strategy():
     # Sum the planting areas for each crop
     total_planting_area = planting_data_2023.groupby('作物名称')['种植面积/亩'].sum()
 
+    # print(total_planting_area)
+
     for crop_name, planting_area_2023 in total_planting_area.items():
+        print(data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values)
         yield_per_mu = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
         expected_sales_volume[crop_name] = planting_area_2023 * yield_per_mu
     for index, row in land_data.iterrows():
