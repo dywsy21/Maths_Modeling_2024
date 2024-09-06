@@ -53,6 +53,7 @@ def optimize_planting_strategy():
         crop_name = row['作物名称']
         crop_type = row['作物类型']
         suitable_land = str(row['种植耕地']).split('\n') if pd.notna(row['种植耕地']) else []
+        print("suitable_land: ", suitable_land)
         for year in years:
             for land in land_types:
                 if land not in suitable_land:
