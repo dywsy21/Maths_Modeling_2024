@@ -3,8 +3,8 @@ import csv
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum
 
 # Load crop and land data from CSV files
-crops_data = pd.read_csv('附件/附件(csv)/附件1_乡村种植的农作物.csv', encoding='utf-8-sig')
-land_data = pd.read_csv('附件/附件(csv)/附件1_乡村的现有耕地.csv', encoding='utf-8-sig')
+crops_data = pd.read_excel('附件/附件(xlsx)/附件1.xlsx', sheet_name='乡村种植的农作物')
+land_data = pd.read_excel('附件/附件(xlsx)/附件1.xlsx', sheet_name='乡村的现有耕地')
 
 # Extract crops and land types
 crops = crops_data['作物名称'].unique()
@@ -16,11 +16,11 @@ seasons = ["第一季", "第二季"]
 planting_area = LpVariable.dicts("planting_area", (crops, land_types, years, seasons), lowBound=0)
 
 # Load the 2023 data
-data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
+data_2023 = pd.read_excel('附件/附件(xlsx)/附件2.xlsx', sheet_name='2023年统计的相关数据')
 
 # Debug: Print column names to verify
 # print("Columns in data_2023:", data_2023.columns)
-planting_data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv', encoding='utf-8-sig')
+planting_data_2023 = pd.read_excel('附件/附件(xlsx)/附件2.xlsx', sheet_name='2023年的农作物种植情况')
 
 
 def optimize_planting_strategy():
