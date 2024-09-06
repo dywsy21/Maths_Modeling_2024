@@ -42,7 +42,7 @@ def main():
 
 
     # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%
-
+    
 
     # 11. 不能超出地块面积
     for i in full_table['种植地块']:
@@ -63,6 +63,15 @@ def main():
             else:
                 land_seasons_dict[land] = ["第一季", "第二季"]
         crop_to_condition[row['作物名称']] = land_seasons_dict
+
+    for crop in full_table['作物名称']:
+        for region in full_table['种植地块'].unique():
+            for year in years:
+                for season in full_table['种植季次'].unique():
+                    if region in crop_to_condition[crop]:
+                        if season not in crop_to_condition[crop][region]:
+                            linear_model += x[(crop, region, year, season)] == 0
+
 
 if __name__ == '__main__':
     main()
