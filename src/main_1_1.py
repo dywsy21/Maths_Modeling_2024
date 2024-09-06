@@ -18,7 +18,19 @@ def optimize_planting_strategy():
     # Define decision variables
     planting_area = LpVariable.dicts("planting_area", (crops, land_types, years), lowBound=0)
 
-    # Add constraints based on land availability
+    # Load the 2023 data
+    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv')
+
+    # Load the 2023 planting data to calculate expected sales volume
+    planting_data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv')
+
+    # Calculate expected sales volume for each crop
+    expected_sales_volume = {}
+    for index, row in planting_data_2023.iterrows():
+        crop_name = row['作物名称']
+        planting_area_2023 = row['种植面积/亩']
+        yield_per_mu = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
+        expected_sales_volume[crop_name] = planting_area_2023 * yield_per_mu
     for index, row in land_data.iterrows():
         land_type = row['地块类型']
         land_area = row['地块面积/亩']
@@ -45,8 +57,8 @@ def optimize_planting_strategy():
 
                     # Constraint for cabbage, white radish, and red radish only in the second season, (4)
                     for crop in ['大白菜', '白萝卜', '红萝卜']:
-                        model += planting_area[crop][land][year] == 0  # First season
-                        model += planting_area[crop][land][year + 1] >= 0  # Second season
+                        model += planting_area[crop][land][year, "第一季"] == 0  # First season
+                        model += planting_area[crop][land][year, "第二季"] >= 0  # Second season
 
     # Constraint for ordinary greenhouses: two seasons of crops
     for land in land_types:
@@ -54,25 +66,35 @@ def optimize_planting_strategy():
             # constraint (5)
             for year in years:
                 # First season: exclude cabbage, white radish, and red radish
-                first_season_vegetables = lpSum(planting_area[crop][land][year] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop)
+                first_season_vegetables = lpSum(planting_area[crop][land][year, "第一季"] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop)
                 model += first_season_vegetables >= 0
 
                 # Second season: only mushrooms (constraint 6)
-                second_season_mushrooms = lpSum(planting_area[crop][land][year + 1] for crop in crops if '食用菌' in crop)
+                second_season_mushrooms = lpSum(planting_area[crop][land][year, "第二季"] for crop in crops if '食用菌' in crop)
                 model += second_season_mushrooms >= 0
-                model += lpSum(planting_area[crop][land][year] for crop in crops if '食用菌' in crop) == 0  # Ensure no mushrooms in the first season
+                model += lpSum(planting_area[crop][land][year, "第一季"] for crop in crops if '食用菌' in crop) == 0  # Ensure no mushrooms in the first season
 
     # Constraint for smart greenhouses: two seasons of vegetables excluding cabbage, white radish, and red radish, (7)
     for land in land_types:
         if land == '智慧大棚':
             for year in years:
-                for season in range(2):  # Two seasons
-                    model += lpSum(planting_area[crop][land][year + season] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop) >= 0
+                for season in ["第一季", "第二季"]:  # Two seasons
+                    model += lpSum(planting_area[crop][land][year, season] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop) >= 0
     
-    #! TODO: revise the objective function
-    model += lpSum(planting_area[crop][land][year] * 100 for crop in crops for land in land_types for year in years)  # Example
+    # Revise the objective function using data from 附件2_2023年统计的相关数据.csv
+    # Load the 2023 data
+    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv')
 
-    # Solve the problem
+    # Define the objective function to maximize profit
+    model += lpSum(
+        planting_area[crop][land][year] * (
+            data_2023.loc[data_2023['作物名称'] == crop, '销售单价/(元/斤)'].values[0] *
+            data_2023.loc[data_2023['作物名称'] == crop, '亩产量/斤'].values[0] -
+            data_2023.loc[data_2023['作物名称'] == crop, '种植成本/(元/亩)'].values[0]
+        )
+        for crop in crops for land in land_types for year in years
+    )
+
     model.solve()
 
     # Output results
