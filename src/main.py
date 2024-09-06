@@ -18,7 +18,16 @@ def optimize_planting_strategy():
     # Define decision variables
     planting_area = LpVariable.dicts("planting_area", (crops, land_types, years), lowBound=0)
 
-    # Add constraints based on land availability
+    # Load the 2023 planting data to calculate expected sales volume
+    planting_data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv')
+
+    # Calculate expected sales volume for each crop
+    expected_sales_volume = {}
+    for index, row in planting_data_2023.iterrows():
+        crop_name = row['作物名称']
+        planting_area_2023 = row['种植面积/亩']
+        yield_per_mu = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
+        expected_sales_volume[crop_name] = planting_area_2023 * yield_per_mu
     for index, row in land_data.iterrows():
         land_type = row['地块类型']
         land_area = row['地块面积/亩']
@@ -83,7 +92,11 @@ def optimize_planting_strategy():
         for crop in crops for land in land_types for year in years
     )
 
-    # Solve the problem
+    # Add constraints to ensure total production does not exceed expected sales volume
+    for crop in crops:
+        for year in years:
+            total_production = lpSum(planting_area[crop][land][year] * data_2023.loc[data_2023['作物名称'] == crop, '亩产量/斤'].values[0] for land in land_types)
+            model += total_production <= expected_sales_volume[crop]
     model.solve()
 
     # Output results
