@@ -11,8 +11,6 @@ def add_from_file_1():
     the_csv_to_be_appended['地块类型'] = the_csv_to_be_appended['种植地块'].map(land_type_dict)
 
 def add_from_file_2():
-    # 作物名称种植季次_to_亩产量种植成本销售单价_dict = dict(zip((file_2['作物名称'], file_2['种植季次']), (file_2['亩产量/斤'], file_2['种植成本/(元/亩)'], file_2['销售单价/(元/斤)'])))
-    # Create a multi-index mapping for 作物编号, 地块类型, and 种植季次 to 亩产量
     land_type_mapping1 = file_2.set_index(['作物名称', '地块类型', '种植季次']).to_dict()['亩产量/斤']
     land_type_mapping2 = file_2.set_index(['作物名称', '地块类型', '种植季次']).to_dict()['种植成本/(元/亩)']
     land_type_mapping3 = file_2.set_index(['作物名称', '地块类型', '种植季次']).to_dict()['销售单价/(元/斤)']
@@ -21,8 +19,24 @@ def add_from_file_2():
     the_csv_to_be_appended['种植成本/(元/亩)'] = the_csv_to_be_appended.apply(lambda row: land_type_mapping2.get((row['作物名称'], row['地块类型'], row['种植季次'])), axis=1)
     the_csv_to_be_appended['销售单价/(元/斤)'] = the_csv_to_be_appended.apply(lambda row: land_type_mapping3.get((row['作物名称'], row['地块类型'], row['种植季次'])), axis=1)
 
+def calculate_expected_sales_volume():
+    the_csv_to_be_appended['预期销售量/斤'] = the_csv_to_be_appended['种植面积/亩'] * the_csv_to_be_appended['亩产量/斤']
+
+def calculate_average_price():
+    def get_average_price(price_range):
+        if price_range and '-' in price_range:
+            low, high = map(float, price_range.split('-'))
+            return (low + high) / 2
+        if price_range:
+            return float(price_range)
+        return None
+    
+    the_csv_to_be_appended['平均价格/元'] = the_csv_to_be_appended['销售单价/(元/斤)'].apply(get_average_price)
+
 
 if __name__ == '__main__':
     add_from_file_1()
     add_from_file_2()
+    calculate_expected_sales_volume()
+    calculate_average_price()
     the_csv_to_be_appended.to_csv('full_table.csv', index=False, encoding='utf-8-sig')
