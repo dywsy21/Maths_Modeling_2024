@@ -19,10 +19,11 @@ def optimize_planting_strategy():
     planting_area = LpVariable.dicts("planting_area", (crops, land_types, years), lowBound=0)
 
     # Load the 2023 data
-    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv')
+    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
 
-    # Load the 2023 planting data to calculate expected sales volume
-    planting_data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv')
+    # Debug: Print column names to verify
+    print("Columns in data_2023:", data_2023.columns)
+    planting_data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv', encoding='utf-8-sig')
 
     # Calculate expected sales volume for each crop
     expected_sales_volume = {}
