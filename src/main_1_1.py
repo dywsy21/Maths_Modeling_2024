@@ -14,7 +14,7 @@ def main():
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
     # Create a sole decision variable: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season]
-    x = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in full_table['作物'] for region in full_table['地区'] for year in full_table['年份'] for season in full_table['季节']), lowBound=0, cat='Continuous')
+    x = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in full_table['作物名称'] for region in full_table['种植地块'].unique() for year in range(2024, 2031) for season in full_table['种植季次'].unique()), lowBound=0, cat='Continuous')
 
 
 if __name__ == '__main__':
