@@ -45,7 +45,10 @@ def main():
     
 
     # 11. 不能超出地块面积
-    for i in full_table['种植地块']:
+    for region in full_table['种植地块']:
+        for year in years:
+            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'] 
+                                  for season in season in full_table['种植季次'].unique()) <= region_areas[region]
 
 
     # 12. 每种作物须满足相应的种植条件
