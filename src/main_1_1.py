@@ -4,6 +4,7 @@ from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
 def main():
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
+    years = list(range(2024, 2031))
 
     crop_to_condition = {}
     for i, row in file2.iterrows():
@@ -29,7 +30,7 @@ def main():
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
     # Create a sole decision variable: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season]
-    x = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in full_table['作物名称'] for region in full_table['种植地块'].unique() for year in range(2024, 2031) for season in full_table['种植季次'].unique()), lowBound=0, cat='Continuous')
+    x = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in full_table['作物名称'] for region in full_table['种植地块'].unique() for year in years for season in full_table['种植季次'].unique()), lowBound=0, cat='Continuous')
 
     # 加十个约束条件：
     # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。
@@ -61,6 +62,8 @@ def main():
 
     # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。
 
+    # 11. 不能超出地块面积
+    for i in full_table['种植地块']:
 
 
 
