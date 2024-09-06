@@ -21,7 +21,8 @@ def optimize_planting_strategy():
     # Load the 2023 data
     data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv')
 
-    # Load the 2023 planting data to calculate expected sales volume
+    # Debug: Print column names to verify
+    print("Columns in data_2023:", data_2023.columns)
     planting_data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv')
 
     # Calculate expected sales volume for each crop
