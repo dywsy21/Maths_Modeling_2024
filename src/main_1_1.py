@@ -3,7 +3,8 @@ from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
 
 def main():
     full_table = pd.read_csv('src\\data\\full_table.csv')
-
+    file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
+    
     # create dict of land areas
     land_areas = dict(zip(full_table['种植地块'],full_table['种植面积/亩']))
 
