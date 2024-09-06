@@ -34,10 +34,10 @@ def optimize_planting_strategy():
             for land in land_types:
                 if land not in suitable_land:
                     model += planting_area[crop_name][land][year] == 0
-                # Constraint for single-season grain crops (excluding rice) on specific land types
+                # Constraint for single-season grain crops (excluding rice) on specific land types, (1)
                 if crop_type == '粮食' and crop_name != '水稻' and land in ['平旱地', '梯田', '山坡地']:
                     model += lpSum(planting_area[crop_name][land][year] for crop_name in crops if crop_type == '粮食' and crop_name != '水稻') <= 1
-                # Constraint for irrigated land: either single-season rice or two-season vegetables
+                # Constraint for irrigated land: either single-season rice or two-season vegetables, (2)
                 if land == '水浇地':
                     rice_area = planting_area['水稻'][land][year]
                     vegetable_area = lpSum(planting_area[crop][land][year] for crop in crops if crop_type == '蔬菜')
