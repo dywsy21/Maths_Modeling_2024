@@ -1,6 +1,6 @@
 import pandas as pd
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
-# timo
+
 def main():
     full_table = pd.read_csv('src\data\\full_table.csv')
 
