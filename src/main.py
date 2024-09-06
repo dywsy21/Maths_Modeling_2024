@@ -51,6 +51,7 @@ def optimize_planting_strategy():
     # Constraint for ordinary greenhouses: two seasons of crops
     for land in land_types:
         if land == '普通大棚':
+            # constraint (5)
             for year in years:
                 # First season: exclude cabbage, white radish, and red radish
                 first_season_vegetables = lpSum(planting_area[crop][land][year] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop)
@@ -59,6 +60,8 @@ def optimize_planting_strategy():
                 # Second season: only mushrooms
                 second_season_mushrooms = lpSum(planting_area[crop][land][year] for crop in crops if '食用菌' in crop)
                 model += second_season_mushrooms >= 0
+
+    #! TODO: revise the objective function
     model += lpSum(planting_area[crop][land][year] * 100 for crop in crops for land in land_types for year in years)  # Example
 
     # Solve the problem
