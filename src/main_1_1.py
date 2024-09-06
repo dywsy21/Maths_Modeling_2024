@@ -7,7 +7,7 @@ def main():
     # Define the problem
     model, expected_sales_volume = optimize_planting_strategy()
     # Revise the objective function using data from 附件2_2023年统计的相关数据.csv
-    # Load the 2023 data
+    # Load the 2023 dat
     data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
 
     # Helper function to convert price range to average price
