@@ -3,7 +3,7 @@ import csv
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum
 from lib import *
 
-def main():
+def main(reduction_factor=0, index=1):
     # Define the problem
     model, expected_sales_volume = optimize_planting_strategy()
     # Revise the objective function using data from 附件2_2023年统计的相关数据.csv
@@ -38,7 +38,10 @@ def main():
     # Output results
     results = {year: {crop: {land: planting_area[crop][land][year] for land in land_types} for crop in crops} for year in years}
     df = pd.DataFrame(results)
-    df.to_excel("result1_1.xlsx")
+    df.to_excel("result1_" + str(index) + ".xlsx")
 
 if __name__ == "__main__":
-    main()
+    # question 1(1)
+    main(0, 1)
+    # question 1(2)
+    main(0.5, 2)

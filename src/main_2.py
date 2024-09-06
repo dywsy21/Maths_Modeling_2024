@@ -67,7 +67,7 @@ def optimize_planting_strategy_question2():
     model += lpSum(
         planting_area[crop][land][year][season] * (
             get_dynamic_price(crop, year) * get_dynamic_yield(crop) * get_sales_volume_growth(crop, year)
-            - data_2023.loc[data_2023['作物名称'] == crop, '种植成本/(元/亩)'].values[0] * (1 + 0.05 * (year - 2023))  # 每年成本增加5%
+            - data_2023.loc[data_2023['作物名称'] == crop, '种植成本/(元/亩)'].values[0])
         )
         for crop in crops for land in land_types for year in years for season in seasons
     )
