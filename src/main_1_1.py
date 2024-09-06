@@ -29,7 +29,7 @@ def main():
     model.solve()
 
     # Output results
-    results = {year: {crop: {land: planting_area[crop][land][year].value() for land in land_types} for crop in crops} for year in years}
+    results = {year: {crop: {land: planting_area[crop][land][year] for land in land_types} for crop in crops} for year in years}
     df = pd.DataFrame(results)
     df.to_excel("result1_1.xlsx")
 
