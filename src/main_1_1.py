@@ -19,7 +19,7 @@ def optimize_planting_strategy():
     planting_area = LpVariable.dicts("planting_area", (crops, land_types, years), lowBound=0)
 
     # Load the 2023 data
-    data_2023 = pd.read_csv('xlsx to csv/xlsx_files/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
+    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
 
     # Debug: Print column names to verify
     print("Columns in data_2023:", data_2023.columns)
