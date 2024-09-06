@@ -7,7 +7,7 @@ def optimize_planting_strategy():
     model = LpProblem(name="planting-strategy", sense=LpMaximize)
 
     # Load crop and land data from CSV files
-    crops_data = pd.read_csv('附件/附件(csv)/附件1_乡村种植的农作物.csv')
+    crops_data = pd.read_csv('附件/附件(csv)/附件1_乡村种植的农作物.csv', encoding='utf-8-sig')
     land_data = pd.read_csv('附件/附件(csv)/附件1_乡村的现有耕地.csv')
 
     # Extract crops and land types
@@ -52,7 +52,7 @@ def optimize_planting_strategy():
     for index, row in crops_data.iterrows():
         crop_name = row['作物名称']
         crop_type = row['作物类型']
-        suitable_land = row['种植耕地'].split('\n')
+        suitable_land = str(row['种植耕地']).split('\n') if pd.notna(row['种植耕地']) else []
         for year in years:
             for land in land_types:
                 if land not in suitable_land:
