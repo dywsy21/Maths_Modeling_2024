@@ -16,8 +16,6 @@ def main(reduction_factor=0, index=1):
             low, high = map(float, price_range.split('-'))
             return (low + high) / 2
         return float(price_range)
-    
-    reduction_factor = 0.5  # 50% reduction for excess portion
 
     model += lpSum(
         (
