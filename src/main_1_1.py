@@ -17,11 +17,16 @@ def main():
             return (low + high) / 2
         return float(price_range)
     
+    reduction_factor = 0.5  # 50% reduction for excess portion
+
     model += lpSum(
         planting_area[crop][land][year][season] * (
             get_average_price(data_2023.loc[data_2023['作物名称'] == crop, '销售单价/(元/斤)'].values[0]) *
             data_2023.loc[data_2023['作物名称'] == crop, '亩产量/斤'].values[0] -
             data_2023.loc[data_2023['作物名称'] == crop, '种植成本/(元/亩)'].values[0]
+        ) * (
+            1 if planting_area[crop][land][year][season] * data_2023.loc[data_2023['作物名称'] == crop, '亩产量/斤'].values[0] <= expected_sales_volume[crop]
+            else reduction_factor
         )
         for crop in crops for land in land_types for year in years for season in seasons
     )
