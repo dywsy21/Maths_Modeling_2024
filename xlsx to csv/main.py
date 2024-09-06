@@ -11,8 +11,13 @@ def transform(file_name):
         data = pd.read_excel(file_name, sheet_name = sheet_name)
         data.to_csv(file_name[:-5] + '_' + sheet_name + '.csv', index = False)
 
-for excel_file in os.listdir("xlsx_files"):
-    if excel_file.endswith(".xlsx"):
-        transform("xlsx_files/" + excel_file)
-        print(f"{excel_file} has been transformed to csv file")
+if __name__ == "__main__":
+    for file in os.listdir("xlsx_files"):
+        if file.endswith(".csv"):
+            os.remove("xlsx_files/" + file)
+
+    for excel_file in os.listdir("xlsx_files"):
+        if excel_file.endswith(".xlsx"):
+            transform("xlsx_files/" + excel_file)
+            print(f"{excel_file} has been transformed to csv file")
     
