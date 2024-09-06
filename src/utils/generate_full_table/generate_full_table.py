@@ -20,9 +20,9 @@ def add_from_file_2():
     # (2) 智慧大棚第一季可种植的蔬菜作物及其亩产量、种植成本和销售价格均与普通大棚相同，表中省略。
     # apply this logic to the data
     for column in ['亩产量/斤', '种植成本/(元/亩)', '销售单价/(元/斤)']:
-        ordinary_rows = the_csv_to_be_appended[
-            (the_csv_to_be_appended['地块类型'] == '普通大棚') & 
-            (the_csv_to_be_appended['种植季次'] == '第一季')
+        ordinary_rows = file_2[
+            (file_2['地块类型'] == '普通大棚') & 
+            (file_2['种植季次'] == '第一季')
         ]
 
         for idx, smart_row in the_csv_to_be_appended[
