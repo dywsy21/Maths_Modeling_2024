@@ -8,7 +8,7 @@ def optimize_planting_strategy():
 
     # Load crop and land data from CSV files
     crops_data = pd.read_csv('附件/附件(csv)/附件1_乡村种植的农作物.csv', encoding='utf-8-sig')
-    land_data = pd.read_csv('附件/附件(csv)/附件1_乡村的现有耕地.csv')
+    land_data = pd.read_csv('附件/附件(csv)/附件1_乡村的现有耕地.csv', encoding='utf-8-sig')
 
     # Extract crops and land types
     crops = crops_data['作物名称'].unique()
@@ -52,7 +52,7 @@ def optimize_planting_strategy():
     for index, row in crops_data.iterrows():
         crop_name = row['作物名称']
         crop_type = row['作物类型']
-        suitable_land = str(row['种植耕地']).split('\n') if pd.notna(row['种植耕地']) else []
+        suitable_land = str(row['种植耕地']).split('\n') if isinstance(row['种植耕地'], str) else []
         print("suitable_land: ", suitable_land)
         for year in years:
             for land in land_types:
@@ -93,11 +93,11 @@ def optimize_planting_strategy():
         if land == '智慧大棚':
             for year in years:
                 for season in ["第一季", "第二季"]:  # Two seasons
-                    model += lpSum(planting_area[crop][land][year][season] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop) >= 0
+                    model += lpSum(planting_area[crop][land][year][season] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in str(crop)) >= 0
     
     # Revise the objective function using data from 附件2_2023年统计的相关数据.csv
     # Load the 2023 data
-    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv')
+    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
 
     # Define the objective function to maximize profit
     model += lpSum(
