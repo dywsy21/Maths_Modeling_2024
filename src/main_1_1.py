@@ -34,8 +34,12 @@ def optimize_planting_strategy():
 
     for crop_name, planting_area_2023 in total_planting_area.items():
         print(data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values)
-        yield_per_mu = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
-        expected_sales_volume[crop_name] = planting_area_2023 * yield_per_mu
+        if not data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].empty:
+            yield_per_mu = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
+            expected_sales_volume[crop_name] = planting_area_2023 * yield_per_mu
+        else:
+            print(f"Warning: No yield data found for crop '{crop_name}'")
+            expected_sales_volume[crop_name] = 0
     for index, row in land_data.iterrows():
         land_type = row['地块类型']
         land_area = row['地块面积/亩']
