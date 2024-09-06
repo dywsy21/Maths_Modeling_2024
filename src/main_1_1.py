@@ -66,8 +66,8 @@ def optimize_planting_strategy():
 
                     # Constraint for cabbage, white radish, and red radish only in the second season, (4)
                     for crop in ['大白菜', '白萝卜', '红萝卜']:
-                        model += planting_area[crop][land][(year, "第一季")] == 0  # First season
-                        model += planting_area[crop][land][(year, "第二季")] >= 0  # Second season
+                        model += planting_area[crop][land][year] == 0  # First season
+                        model += planting_area[crop][land][year] >= 0  # Second season
 
     # Constraint for ordinary greenhouses: two seasons of crops
     for land in land_types:
