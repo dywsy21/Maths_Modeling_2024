@@ -3,8 +3,8 @@ import csv
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum
 
 # Load crop and land data from CSV files
-crops_data = pd.read_excel('附件/附件(xlsx)/附件1.xlsx', sheet_name='乡村种植的农作物')
-land_data = pd.read_excel('附件/附件(xlsx)/附件1.xlsx', sheet_name='乡村的现有耕地')
+crops_data = pd.read_csv('附件/附件(csv)/附件1_乡村种植的农作物.csv', encoding='utf-8-sig')
+land_data = pd.read_csv('附件/附件(csv)/附件1_乡村的现有耕地.csv', encoding='utf-8-sig')
 
 # Extract crops and land types
 crops = crops_data['作物名称'].unique()
@@ -16,11 +16,11 @@ seasons = ["第一季", "第二季"]
 planting_area = LpVariable.dicts("planting_area", (crops, land_types, years, seasons), lowBound=0)
 
 # Load the 2023 data
-data_2023 = pd.read_excel('附件/附件(xlsx)/附件2.xlsx', sheet_name='2023年统计的相关数据')
+data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
 
 # Debug: Print column names to verify
 # print("Columns in data_2023:", data_2023.columns)
-planting_data_2023 = pd.read_excel('附件/附件(xlsx)/附件2.xlsx', sheet_name='2023年的农作物种植情况')
+planting_data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv', encoding='utf-8-sig')
 
 
 def optimize_planting_strategy():
@@ -53,13 +53,22 @@ def optimize_planting_strategy():
     for index, row in crops_data.iterrows():
         crop_name = row['作物名称']
         crop_type = row['作物类型']
-        suitable_land = str(row['种植耕地']).split('\n') if isinstance(row['种植耕地'], str) else []
-        print("crop_name", crop_name ,"suitable_land: ", suitable_land)
+        
+        text: str = row['种植耕地']
+        land_seasons = text.split(';')
+        land_seasons_dict: dict = {}
+        for land_season in land_seasons:
+            land_season = land_season.split(':')
+            land = land_season[0]
+            seasons = land_season[1].split(' ')
+            land_seasons_dict[land] = seasons
+            
         for year in years:
             for land in land_types:
-                if land not in suitable_land:
-                    for season in seasons:
-                        model += planting_area[crop_name][land][year][season] == 0
+                if land in land_seasons_dict:
+                    seasons = land_seasons_dict[land]
+                else:
+                    seasons = ["第一季", "第二季"]
                 # Constraint for single-season grain crops (excluding rice) on specific land types, (1)
                 if crop_type == '粮食' and crop_name != '水稻' and land in ['平旱地', '梯田', '山坡地']:
                     for season in seasons:
