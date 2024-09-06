@@ -1,77 +1,84 @@
 import pandas as pd
-from lib import *   # Import your custom library
+import numpy as np
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum
 
-# Load crop and land data from CSV files using a function from lib
-crops_data, land_data, data_2023, planting_data_2023 = lib.load_data()
-
-# Extract crops and land types
-crops = crops_data['作物名称'].unique()
-land_types = land_data['地块类型'].unique()
-years = range(2024, 2031)
-
-# Define decision variables
-seasons = ["第一季", "第二季"]
-planting_area = LpVariable.dicts("planting_area", (crops, land_types, years, seasons), lowBound=0)
-
-# Create the optimization model
-def optimize_planting_strategy():
+def optimize_planting_strategy_question2():
     # Define the problem
-    model = LpProblem(name="planting-strategy", sense=LpMaximize)
+    model = LpProblem(name="planting-strategy-question2", sense=LpMaximize)
 
-    # Calculate expected sales volume using lib's function
-    expected_sales_volume = lib.calculate_expected_sales_volume(planting_data_2023, data_2023)
+    # Load crop and land data from CSV files
+    crops_data = pd.read_csv('附件/附件(csv)/附件1_乡村种植的农作物.csv', encoding='utf-8-sig')
+    land_data = pd.read_csv('附件/附件(csv)/附件1_乡村的现有耕地.csv', encoding='utf-8-sig')
+    data_2023 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
 
-    # Add land area constraints using lib's helper function
-    for land_type, land_area in lib.get_land_area(land_data):
+    # Extract crops and land types
+    crops = crops_data['作物名称'].unique()
+    land_types = land_data['地块类型'].unique()
+    years = range(2024, 2031)
+    seasons = ["第一季", "第二季"]
+
+    # Define decision variables
+    planting_area = LpVariable.dicts("planting_area", (crops, land_types, years, seasons), lowBound=0)
+
+    # Helper function to get the dynamic price based on year and crop type
+    def get_dynamic_price(crop_name, year):
+        try:
+            base_price = data_2023.loc[data_2023['作物名称'] == crop_name, '销售单价/(元/斤)'].values[0]
+        except IndexError:
+            print(f"Warning: No price data found for crop '{crop_name}'")
+            base_price = 0  # 如果找不到作物价格，则设置为0
+
+        if '粮食' in crop_name:
+            return base_price  # 粮食类价格稳定
+        elif '蔬菜' in crop_name:
+            return base_price * (1 + 0.05 * (year - 2023))  # 蔬菜类每年增长5%
+        elif '食用菌' in crop_name:
+            if crop_name == '羊肚菌':
+                return base_price * (1 - 0.05 * (year - 2023))  # 羊肚菌每年下降5%
+            else:
+                return base_price * (1 - np.random.uniform(0.01, 0.05) * (year - 2023))  # 其他食用菌下降1%-5%
+
+    # Helper function to simulate the uncertain yield per acre
+    def get_dynamic_yield(crop_name):
+        try:
+            base_yield = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
+        except IndexError:
+            print(f"Warning: No yield data found for crop '{crop_name}'")
+            base_yield = 0  # 如果找不到作物亩产量，则设置为0
+
+        return base_yield * np.random.uniform(0.9, 1.1)  # 亩产量每年波动±10%
+
+    # Helper function to calculate expected sales volume growth
+    def get_sales_volume_growth(crop_name, year):
+        if crop_name in ['小麦', '玉米']:
+            return 1 + np.random.uniform(0.05, 0.10) * (year - 2023)  # 小麦和玉米每年增长5%-10%
+        else:
+            return 1 + np.random.uniform(-0.05, 0.05)  # 其他作物±5%波动
+
+    # Add constraints for each year and land type
+    for index, row in land_data.iterrows():
+        land_type = row['地块类型']
+        land_area = row['地块面积/亩']
         for year in years:
             for season in seasons:
                 model += lpSum(planting_area[crop][land_type][year][season] for crop in crops) <= land_area
 
-    # Add crop-specific constraints
-    for crop_name, crop_type, land_seasons_dict in lib.get_crop_constraints(crops_data):
-        for year in years:
-            for land in land_types:
-                if land in land_seasons_dict:
-                    seasons = land_seasons_dict[land]
-                else:
-                    seasons = ["第一季", "第二季"]
+    # Revised objective function with uncertainties and dynamic factors
+    model += lpSum(
+        planting_area[crop][land][year][season] * (
+            get_dynamic_price(crop, year) * get_dynamic_yield(crop) * get_sales_volume_growth(crop, year)
+            - data_2023.loc[data_2023['作物名称'] == crop, '种植成本/(元/亩)'].values[0] * (1 + 0.05 * (year - 2023))  # 每年成本增加5%
+        )
+        for crop in crops for land in land_types for year in years for season in seasons
+    )
 
-                # Constraint for single-season grain crops (excluding rice)
-                if crop_type == '粮食' and crop_name != '水稻' and land in ['平旱地', '梯田', '山坡地']:
-                    for season in seasons:
-                        model += lpSum(planting_area[crop_name][land][year][season] for crop_name in crops if crop_type == '粮食' and crop_name != '水稻') <= 1
-
-                # Irrigated land constraint (rice vs vegetables)
-                if land == '水浇地':
-                    rice_area = planting_area['水稻'][land][year]["第一季"]
-                    vegetable_area = lpSum(planting_area[crop][land][year][season] for crop in crops if crop_type == '蔬菜' for season in seasons)
-                    model += (rice_area == 0) | (vegetable_area == 0)
-
-                    # Special season constraint for specific crops
-                    for crop in ['大白菜', '白萝卜', '红萝卜']:
-                        model += planting_area[crop][land][year]["第一季"] == 0  # First season
-                        model += planting_area[crop][land][year]["第二季"] >= 0  # Second season
-
-    # Greenhouse constraints
-    for land in land_types:
-        if land == '普通大棚':
-            for year in years:
-                first_season_vegetables = lpSum(planting_area[crop][land][year]["第一季"] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop)
-                model += first_season_vegetables >= 0
-                second_season_mushrooms = lpSum(planting_area[crop][land][year]["第二季"] for crop in crops if '食用菌' in crop)
-                model += second_season_mushrooms >= 0
-                model += lpSum(planting_area[crop][land][year]["第一季"] for crop in crops if '食用菌' in crop) == 0
-
-        elif land == '智慧大棚':
-            for year in years:
-                for season in ["第一季", "第二季"]:
-                    model += lpSum(planting_area[crop][land][year][season] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in str(crop)) >= 0
-
-    return model, expected_sales_volume
-
-# Main function to run the optimization
-if __name__ == "__main__":
-    model, expected_sales_volume = optimize_planting_strategy()
+    # Solve the model
     model.solve()
-    lib.output_results(model, expected_sales_volume)  # Use lib to output the results
+
+    # Output results
+    results = {year: {crop: {land: {season: planting_area[crop][land][year][season].value() for season in seasons} for land in land_types} for crop in crops} for year in years}
+    df = pd.DataFrame(results)
+    df.to_excel("result2.xlsx")
+
+if __name__ == "__main__":
+    optimize_planting_strategy_question2()
