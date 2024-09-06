@@ -57,9 +57,10 @@ def optimize_planting_strategy():
                 first_season_vegetables = lpSum(planting_area[crop][land][year] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'] and '蔬菜' in crop)
                 model += first_season_vegetables >= 0
 
-                # Second season: only mushrooms
-                second_season_mushrooms = lpSum(planting_area[crop][land][year] for crop in crops if '食用菌' in crop)
+                # Second season: only mushrooms (constraint 6)
+                second_season_mushrooms = lpSum(planting_area[crop][land][year + 1] for crop in crops if '食用菌' in crop)
                 model += second_season_mushrooms >= 0
+                model += lpSum(planting_area[crop][land][year] for crop in crops if '食用菌' in crop) == 0  # Ensure no mushrooms in the first season
 
     #! TODO: revise the objective function
     model += lpSum(planting_area[crop][land][year] * 100 for crop in crops for land in land_types for year in years)  # Example
