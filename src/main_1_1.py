@@ -34,7 +34,7 @@ def optimize_planting_strategy():
     # print(total_planting_area)
 
     for crop_name, planting_area_2023 in total_planting_area.items():
-        print(data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values)
+        # print(data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values)
         if not data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].empty:
             yield_per_mu = data_2023.loc[data_2023['作物名称'] == crop_name, '亩产量/斤'].values[0]
             expected_sales_volume[crop_name] = planting_area_2023 * yield_per_mu
