@@ -43,15 +43,10 @@ def optimize_planting_strategy():
                     vegetable_area = lpSum(planting_area[crop][land][year] for crop in crops if crop_type == '蔬菜')
                     model += (rice_area == 0) | (vegetable_area == 0)
 
-                    # If two seasons of vegetables are planted
-                    if vegetable_area > 0:
-                        # First season: exclude cabbage, white radish, and red radish
-                        first_season_vegetables = lpSum(planting_area[crop][land][year] for crop in crops if crop not in ['大白菜', '白萝卜', '红萝卜'])
-                        model += first_season_vegetables >= 0
-
-                        # Second season: only one of cabbage, white radish, or red radish
-                        second_season_vegetables = lpSum(planting_area[crop][land][year] for crop in ['大白菜', '白萝卜', '红萝卜'])
-                        model += second_season_vegetables <= 1
+                    # Constraint for cabbage, white radish, and red radish only in the second season
+                    for crop in ['大白菜', '白萝卜', '红萝卜']:
+                        model += planting_area[crop][land][year] == 0  # First season
+                        model += planting_area[crop][land][year + 1] >= 0  # Second season
 
     # Objective function (maximize profit)
     model += lpSum(planting_area[crop][land][year] * 100 for crop in crops for land in land_types for year in years)  # Example
