@@ -107,6 +107,8 @@ def main(reduction_factor, index):
                             linear_model += x[(crop, region, year, season)] == 0
                         elif crop_to_condition[crop][region] == ['单季']:
                             linear_model += not (x[(crop, region, year, '第一季')] and x[(crop, region, year, '第二季')])
+    
+    # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产
 
 
     # 计算每种作物的预期销售量，为了目标函数服务
@@ -117,9 +119,9 @@ def main(reduction_factor, index):
         else:
             crop_to_expected_sales[row['作物名称']] += row['预期销售量/斤']
 
-    # 创建三个dict，分别存储每种作物的价格和销售量
+    # 创建两个dict，分别存储每种作物的种植成本和价格
     crop_to_price = dict(zip(full_table['作物名称'], full_table['种植成本/(元/亩)']))
-    crop_to_expected_sales = dict(zip(full_table['作物名称'], full_table['预期销售量/斤']))
+     = dict(zip(full_table['作物名称'], full_table['预期销售量/斤']))
 
     # 目标函数
     # 超出预期销售量的部分，价格乘以 reduction_factor
