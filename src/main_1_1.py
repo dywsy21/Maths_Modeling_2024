@@ -14,36 +14,41 @@ def main():
     # Create a sole decision variable: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season]
     x = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in full_table['作物名称'] for region in full_table['种植地块'].unique() for year in years for season in full_table['种植季次'].unique()), lowBound=0, cat='Continuous')
 
-    # 加十个约束条件：
-    # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。
+    # 加十二个约束条件：
+    # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。 [已被12包含]
+    # Already included in 12
 
 
-    # 2. 水浇地每年可以单季种植水稻或[两季种植蔬菜作物]。 []被12包含
-    for region in full_table['种植地块'].unique():
-        for year in years:
-            linear_model += not (x['水稻', region, year, '第一季'] and x['水稻', region, year, '第二季'])
-
-            
+    # 2. 水浇地每年可以单季种植水稻或[两季种植蔬菜作物]。 [已被12包含]
+    # Already included in 12
+    # for region in full_table['种植地块'].unique():
+    #     for year in years:
+    #         linear_model += not (x['水稻', region, year, '第一季'] and x['水稻', region, year, '第二季'])
 
 
     # 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
-
-
-    # 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。
     for region in full_table['种植地块'].unique():
         for year in years:
-            for crop in full_table['作物名称'].unique():
-                if crop in ['大白菜', '白萝卜', '红萝卜']:
-                    linear_model += lpSum(x[crop, region, year, '第一季']) == 0
+            linear_model += lpSum(x[crop, region, year, '第一季'] for crop in full_table['作物名称'].unique() if crop not in ['大白菜', '白萝卜', '红萝卜']) <= 1
+            linear_model += lpSum(x[crop, region, year, '第二季'] for crop in full_table['作物名称'].unique() if crop in ['大白菜', '白萝卜', '红萝卜']) <= 1
+            linear_model += lpSum(x[crop, region, year, '第二季'] for crop in full_table['作物名称'].unique() if crop not in ['大白菜', '白萝卜', '红萝卜']) == 0
+            
+
+    # 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。
+    for year in years:
+        for i, row in full_table.iterrows():
+            if row['作物名称'] in ['大白菜', '白萝卜', '红萝卜'] and row['地块类型'] == '水浇地':
+                linear_model += x[row['作物名称'], row['种植地块'], year, '第一季'] == 0
                 
 
-    # 5. 普通大棚每年种植两季作物，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外），第二季只能种植食用菌。
+    # 5. 普通大棚每年种植两季作物，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外），第二季只能种植食用菌。[已被12包含]
+    # Already included in 12
 
+    # 6. 因食用菌类适应在较低且适宜的温度和湿度环境中生长，所以只能在秋冬季的普通大棚里种植。 [已被12包含]
+    # Already included in 12
 
-    # 6. 因食用菌类适应在较低且适宜的温度和湿度环境中生长，所以只能在秋冬季的普通大棚里种植。
-
-
-    # 7. 智慧大棚每年都可种植两季蔬菜（大白菜、白萝卜和红萝卜除外）。
+    # 7. 智慧大棚每年都可种植两季蔬菜（大白菜、白萝卜和红萝卜除外）。 [已被12包含]
+    # Already included in 12
 
 
     # 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
@@ -84,7 +89,7 @@ def main():
                 seasons = land_season[1].split(' ')
                 land_seasons_dict[land] = seasons
             else:
-                land_seasons_dict[land] = ["第一季", "第二季"]
+                land_seasons_dict[land] = ['单季']
         crop_to_condition[row['作物名称']] = land_seasons_dict
 
     for crop in full_table['作物名称']:
@@ -94,6 +99,8 @@ def main():
                     if region in crop_to_condition[crop]:
                         if season not in crop_to_condition[crop][region]:
                             linear_model += x[(crop, region, year, season)] == 0
+                        elif crop_to_condition[crop][region] == ['单季']:
+                            linear_model += not (x[(crop, region, year, '第一季')] and x[(crop, region, year, '第二季')])
 
 
 if __name__ == '__main__':
