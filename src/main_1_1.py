@@ -130,18 +130,24 @@ def main(reduction_factor, index):
     # 创建两个dict，分别存储每种作物的种植成本和价格，为了目标函数服务
     crop_to_cost = dict(zip(full_table['作物名称'], full_table['种植成本/(元/亩)']))
     crop_to_price = dict(zip(full_table['作物名称'], full_table['销售单价/(元/斤)']))
-    def get_yield(crop, region):
+    def get_yield(crop, region): # 斤/亩
         for i, row in full_table.iterrows():
             if row['作物名称'] == crop and row['种植地块'] == region:
                 return row['亩产量']
+    
+    def get_total_planting_area(crop, year, season):
+        return lpSum(planting_area[crop, region, year, season] for region in full_table['种植地块'].unique())
 
-    # 目标函数
-    # 超出预期销售量的部分，价格乘以 reduction_factor
-    linear_model += lpSum(planting_area[crop, region, year, season] * (max(crop_to_price[crop] * get_yield(crop, region) * (1 - reduction_factor) - crop_to_cost[crop], 0)
-                            if planting_area[crop, region, year, season] > crop_to_expected_sales[crop] 
-                            else crop_to_price[crop] * get_yield(crop, region) - crop_to_cost[crop]) 
+
+    def get_profit(crop, year, season):
+        if get_total_planting_area(crop, year, season) > crop_to_expected_sales[crop]:
+            return max(0, crop_to_price[crop] * get_yield(crop, region) * (1 - reduction_factor) - crop_to_cost[crop]) * (get_total_planting_area(crop, year, season) - crop_to_expected_sales[crop]) + crop_to_expected_sales[crop] * crop_to_price[crop] - crop_to_cost[crop] * get_total_planting_area(crop, year, season)
+        else:
+            return (crop_to_price[crop] * get_yield(crop, region) - crop_to_cost[crop]) * get_total_planting_area(crop, year, season)
+
+    # 目标函数, 超出预期销售量的部分，价格乘以 reduction_factor
+    linear_model += lpSum(get_profit(crop, year, season)
                             for crop in full_table['作物名称'].unique()
-                            for region in full_table['种植地块'].unique() 
                             for year in years 
                             for season in full_table['种植季次'].unique())
     
