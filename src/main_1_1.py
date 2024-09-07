@@ -56,7 +56,7 @@ def main(reduction_factor, index):
     for region in full_table['种植地块'].unique():
         for y_begin in range(2024, 2029):
             linear_model += lpSum(planting_decision[crop, region, year, season] for crop in bean_crops 
-                                  for year in range(y_begin, y_begin+3) for season in seasons) >= 1
+                                  for year in range(y_begin, y_begin+3) for season in seasons) >= 0.5
 
     # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
     # Ensure planting_decision is used in constraints
