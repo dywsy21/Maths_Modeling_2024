@@ -112,7 +112,7 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
     \end{tabular}
 \end{table}
 
-如下是目标函数的定义：\newline
+目标函数为使得如下的变量最大，也即使总利润最大：\newline
 \begin{equation}
     Total\_profit = \sum_{c, y} \begin{cases} 
     profit(r, s), & \text{if condition 1} \\
@@ -120,7 +120,10 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
     \end{cases}
 \end{equation}
 
-
+其中：
+\begin{equation}
+    production(r, s) = \sum_{r, s} Y_{c,r} \cdot x_{c,r,y,s}
+\end{equation}
 
 \subsubsection{模型的求解}
 单纯形法（Simplex Algorithm）是最常用的线性规划求解算法，基于迭代移动的方法，在可行解的顶点之间跳跃，直到找到最优解。它适用于线性规划问题，并且非常有效。
