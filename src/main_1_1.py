@@ -5,7 +5,7 @@ def main():
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
 
-
+    seasons = ['第一季','第二季']
     years = list(range(2024, 2031))
     region_areas = dict(zip(full_table['种植地块'],full_table['种植面积/亩']))
 
@@ -48,23 +48,27 @@ def main():
 
     # 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
     bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
-    
+    for region in full_table['种植地块']:
+        for y_begin in range(2024, 2029):
+            model += lpSum()
 
     # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
 
 
     # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%。
-    for region in full_table['种植地块']:
-        for year in years:
-            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'].unique() 
-                                  for season in full_table['种植季次'].unique()) >= 0.3*region_areas[region]
-    
+    for crop in full_table['作物名称'].unique():
+        for region in full_table['种植地块']:
+            for year in years:
+                for season in seasons:
+                    linear_model += x[crop, region, year, season] >= 0.3*region_areas[region]
+        
 
     # 11. 不能超出地块面积
-    for region in full_table['种植地块']:
+    # TODO: need to be revised: sum of crops
+    for region in full_table['种植地块'].unique():
         for year in years:
-            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'].unique() 
-                                  for season in full_table['种植季次'].unique()) <= region_areas[region]
+            for season in seasons:
+                linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'].unique()) <= region_areas[region]
 
 
     # 12. 每种作物须满足相应的种植条件
