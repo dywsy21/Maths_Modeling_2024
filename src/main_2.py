@@ -26,7 +26,6 @@ def main(reduction_factor, index):
             sales_rate['作物名称'] = lambda: np.random.uniform(0.95, 1.05) #! TODO: potential misunderstanding
 
     # price change rate
-    crop_to_type = dict(zip(file2['作物名称'], file2['作物类型']))
         # mentioned types
         # '粮食': 1.00,
         # '粮食（豆类）': 1.00,
@@ -45,6 +44,10 @@ def main(reduction_factor, index):
         else:# 食用菌 except 羊肚菌
             price_rate[row['作物名称']] = lambda: np.random.uniform(0.95, 0.99)
     
-    
+    # yield change rate
+    yield_rate = lambda: np.random.uniform(0.9, 1.1)
+
+    # cost change rate
+    cost_rate = 1.05
 
 
