@@ -44,14 +44,14 @@ def main():
     # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%。
     for region in full_table['种植地块']:
         for year in years:
-            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'] 
+            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'].unique() 
                                   for season in full_table['种植季次'].unique()) >= 0.3*region_areas[region]
     
 
     # 11. 不能超出地块面积
     for region in full_table['种植地块']:
         for year in years:
-            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'] 
+            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'].unique() 
                                   for season in full_table['种植季次'].unique()) <= region_areas[region]
 
 
