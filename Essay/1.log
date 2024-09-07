@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.10.14)  7 SEP 2024 20:43
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.10.14)  7 SEP 2024 20:45
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -863,11 +863,9 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package hyperref Info: Link coloring ON on input line 18.
+(./1.out) (./1.out)
 \@outlinefile=\write4
 \openout4 = `1.out'.
-
-
-Package hyperref Warning: Rerun to get /PageLabels entry.
 
 
 Package fontspec Info: Could not resolve font "SimHei/BI" (it probably doesn't
@@ -891,6 +889,7 @@ Package fontspec Info: Font family 'SimHei(0)' created for font 'SimHei' with
 (fontspec)             - 'normal' (m/n) with NFSS spec.:
 (fontspec)             <->"SimHei/OT:script=hani;language=dflt;"
 (fontspec)             - 'small caps'  (m/sc) with NFSS spec.: 
+
 
 
 LaTeX Font Warning: Font shape `TU/SimHei(0)/b/n' undefined
@@ -1012,9 +1011,6 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                \kern 2.00876pt
 (hyperref)                removed on input line 33.
-
-
-LaTeX Warning: Citation `ref1' on page 2 undefined on input line 34.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
@@ -1256,139 +1252,76 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removed on input line 130.
 
 
-Overfull \hbox (47.96565pt too wide) in paragraph at lines 137--151
- [] 
+Overfull \hbox (47.96565pt too wide) in paragraph at lines 134--146
+ [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 153--154
+Underfull \hbox (badness 10000) in paragraph at lines 148--149
 
  []
 
 
-Overfull \hbox (88.66154pt too wide) detected at line 163
+Overfull \hbox (88.66154pt too wide) detected at line 158
 [][][]\OML/cmm/m/it/12.05 Total[]profit \OT1/cmr/m/n/12.05 = [] \OML/cmm/m/it/12.05 profit\OT1/cmr/m/n/12.05 (\OML/cmm/m/it/12.05 r; s\OT1/cmr/m/n/12.05 ) = []
  []
 
+[6] [7]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\leavevmode@ifvmode' on input line 190.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                \kern 2.00876pt
-(hyperref)                removed on input line 190.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\leavevmode@ifvmode' on input line 190.
+(hyperref)                removing `\leavevmode@ifvmode' on input line 185.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                \kern 2.00876pt
-(hyperref)                removed on input line 190.
+(hyperref)                removed on input line 185.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\leavevmode@ifvmode' on input line 190.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                \kern 2.00876pt
-(hyperref)                removed on input line 190.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\leavevmode@ifvmode' on input line 190.
+(hyperref)                removing `\leavevmode@ifvmode' on input line 185.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                \kern 2.00876pt
-(hyperref)                removed on input line 190.
+(hyperref)                removed on input line 185.
 
 
-Underfull \hbox (badness 5245) in paragraph at lines 206--207
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 185.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern 2.00876pt
+(hyperref)                removed on input line 185.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 185.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern 2.00876pt
+(hyperref)                removed on input line 185.
+
+
+Underfull \hbox (badness 5245) in paragraph at lines 201--202
 []\TU/SimSun(0)/m/n/12.05 孙 飞\TU/TimesNewRoman(0)/m/n/12.05 . \TU/SimSun(0)/m/n/12.05 农 作 物 生 产 专 业 化 对 农 户 生 计 的 影 响 研 究 \TU/TimesNewRoman(0)/m/n/12.05 [D]. \TU/SimSun(0)/m/n/12.05 中 南 财 经 政 法 大
  []
 
-
-e:/Folder Collection/Maths_Modeling_2024/Essay/1.tex:211: LaTeX Error: \begin{table} on input line 133 ended by \end{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.211 \end{document}
-                    
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-(./1.aux)
+[8] (./1.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `1.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `1.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  6AB230412A52B739AC55838CEA2D58E4;1850.
-e:/Folder Collection/Maths_Modeling_2024/Essay/1.tex:211: You can't use `\end' in internal vertical mode.
-\enddocument ...cument/end}\deadcycles \z@ \@@end 
-                                                  
-l.211 \end{document}
-                    
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
-
-
-e:/Folder Collection/Maths_Modeling_2024/Essay/1.tex:211: LaTeX Error: \begin{table} on input line 133 ended by \end{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.211 \end{document}
-                    
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-e:/Folder Collection/Maths_Modeling_2024/Essay/1.tex:211: Missing } inserted.
-<inserted text> 
-                }
-l.211 \end{document}
-                    
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-)
-! Emergency stop.
-<*> ...Collection/Maths_Modeling_2024/Essay/1.tex"
-                                                  
-*** (job aborted, no legal \end found)
-
- 
+Package rerunfilecheck Info: File `1.out' has not changed.
+(rerunfilecheck)             Checksum: EB21FA760A3A0DFA2358517534CBD12A;2923.
+ ) 
 Here is how much of TeX's memory you used:
- 23394 strings out of 478634
- 506770 string characters out of 5847194
+ 23406 strings out of 478634
+ 506878 string characters out of 5847194
  1872012 words of memory out of 5000000
- 43117 multiletter control sequences out of 15000+600000
+ 43125 multiletter control sequences out of 15000+600000
  529848 words of font info for 169 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 104i,19n,111p,464b,541s stack positions out of 10000i,1000n,20000p,200000b,200000s
-Output written on 1.xdv (7 pages, 93140 bytes).
+ 104i,16n,111p,464b,501s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+Output written on 1.xdv (10 pages, 137896 bytes).
