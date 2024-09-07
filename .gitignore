@@ -6,7 +6,6 @@
 Essay/*.aux
 Essay/*.log
 Essay/*.out
-Essay/*.pdf
 Essay/*.synctex.gz
 Essay/*.toc
 Essay/*.fdb_latexmk
