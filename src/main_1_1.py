@@ -165,7 +165,7 @@ def main(reduction_factor, index):
             if row['作物名称'] == crop and row['种植季次'] == season:
                 return row['平均价格/(元/斤)']
         return 0
-    
+
     def get_cost(crop, region):
         for i, row in full_table.iterrows():
             if row['作物名称'] == crop and row['地块类型'] == region_to_type[region]:
@@ -180,16 +180,15 @@ def main(reduction_factor, index):
     
     def get_profit(crop, year):
         if get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季'):
-            return my_max(lpSum(planting_area[(crop, region, year, season)]
+            return lpSum(planting_area[(crop, region, year, season)]
                          * (get_yield_per_acre(crop, region) * get_price(crop, season) - get_cost(crop, region))
                         for region in regions for season in seasons
-                    ), 0)
+                    )
         else:
-            return my_max(lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) - get_expected_sales(crop, season))
+            return lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) - get_expected_sales(crop, season) - get_cost(crop, region))
                          * get_price(crop, season) * (1 - reduction_factor) 
                          for region in regions for season in seasons) \
-                    + lpSum(get_expected_sales(crop, season) * get_price(crop, season) for season in seasons) \
-                    - lpSum(planting_area[(crop, region, year, season)] * get_cost(crop, region) for region in regions for season in seasons), 0)
+                    + lpSum(get_expected_sales(crop, season) * get_price(crop, season) for season in seasons)
 
     # 目标函数, 超出预期销售量的部分，价格乘以 reduction_factor
     linear_model += lpSum(get_profit(crop, year) for crop in crops for year in years)
