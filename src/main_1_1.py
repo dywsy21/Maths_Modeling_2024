@@ -217,7 +217,7 @@ def main(reduction_factor, index):
         print(f"Year {k} objective function value: {yearly_obj_value}")
 
     # Output results
-    results = {year: {crop: {region: planting_area[(crop, region, year, season)].varValue for region in regions} for crop in crops} for year in years}
+    results = {year: {crop: {region: {season: planting_area[(crop, region, year, season)].varValue for season in seasons} for region in regions} for crop in crops} for year in years}
     df = pd.DataFrame(results)
     df.to_excel("result1_" + str(index) + ".xlsx")
 
