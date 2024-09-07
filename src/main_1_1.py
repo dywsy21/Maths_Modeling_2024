@@ -111,9 +111,11 @@ def main(reduction_factor, index):
     for crop in full_table['作物名称'].unique():
         for region in full_table['种植地块'].unique():
             for year in years:
-                linear_model += ((planting_area[crop, region, year, '第一季']>0) & (planting_area[crop, region, year, '第二季']>0)) == 0
+                # 同一年的第一季和第二季
+                linear_model += ((planting_area[crop, region, year, '第一季']>0) and (planting_area[crop, region, year, '第二季']>0)) == False
+                # 上一年第二季和下一年第一季
                 if year < 2030:
-                    linear_model += ((planting_area[crop, region, year, '第二季']>0) & (planting_area[crop, region, year+1, '第一季']>0)) == 0
+                    linear_model += ((planting_area[crop, region, year, '第二季']>0) and (planting_area[crop, region, year+1, '第一季']>0)) == False
 
 
 
