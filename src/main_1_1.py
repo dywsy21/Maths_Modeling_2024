@@ -75,7 +75,6 @@ def main(reduction_factor, index):
         
 
     # 11. 不能超出地块面积
-    # TODO: need to be revised: sum of crops
     for region in full_table['种植地块'].unique():
         for year in years:
             for season in seasons:
@@ -109,6 +108,13 @@ def main(reduction_factor, index):
                             linear_model += not (x[(crop, region, year, '第一季')] and x[(crop, region, year, '第二季')])
     
     # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产
+    for crop in full_table['作物名称'].unique():
+        for region in full_table['种植地块'].unique():
+            for year in years:
+                linear_model += ((x[crop, region, year, '第一季']>0) & (x[crop, region, year, '第二季']>0)) == 0
+                if year < 2030:
+                    linear_model += ((x[crop, region, year, '第二季']>0) & (x[crop, region, year+1, '第一季']>0)) == 0
+
 
 
     # 计算每种作物的预期销售量，为了目标函数服务
