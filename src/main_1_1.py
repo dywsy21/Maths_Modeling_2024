@@ -23,7 +23,7 @@ def main(reduction_factor, index):
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
     region_to_type = dict(zip(full_table['种植地块'],full_table['地块类型']))
-    
+
     # Create decision variables: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season] and the decision to plant or not
     planting_area = LpVariable.dicts("planting_area", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], lowBound=0, cat='Continuous')
     planting_decision = LpVariable.dicts("planting_decision", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], cat='Binary')
@@ -200,6 +200,7 @@ def main(reduction_factor, index):
     #     for crop in crops for region in regions for year in years for season in seasons
     # )
     
+    linear_model.writeLP("model.lp")
     linear_model.solve()
 
 
