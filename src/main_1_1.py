@@ -5,6 +5,7 @@ def main():
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
 
+
     years = list(range(2024, 2031))
     region_areas = dict(zip(full_table['种植地块'],full_table['种植面积/亩']))
 
@@ -17,7 +18,10 @@ def main():
     # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。
 
 
-    # 2. 水浇地每年可以单季种植水稻或两季种植蔬菜作物。
+    # 2. 水浇地每年可以单季种植水稻或[两季种植蔬菜作物]。 []被12包含
+    for region in full_table['种植地块'].unique():
+        for year in years:
+            
 
 
     # 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
@@ -49,14 +53,14 @@ def main():
     # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%。
     for region in full_table['种植地块']:
         for year in years:
-            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'] 
-                                  for season in full_table['种植季次'].unique()) >= 0.3 * region_areas[region]
+            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'].unique() 
+                                  for season in full_table['种植季次'].unique()) >= 0.3*region_areas[region]
     
 
     # 11. 不能超出地块面积
     for region in full_table['种植地块']:
         for year in years:
-            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'] 
+            linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'].unique() 
                                   for season in full_table['种植季次'].unique()) <= region_areas[region]
 
 
