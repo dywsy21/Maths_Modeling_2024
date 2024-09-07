@@ -5,6 +5,9 @@ def main(reduction_factor, index):
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
 
+    # 将full_table中的单季改为第一季
+    full_table['种植季次'] = full_table['种植季次'].apply(lambda x: '第一季' if x == '单季' else x)
+
     seasons = ['第一季','第二季']
     years = list(range(2024, 2031))
     regions = full_table['种植地块'].unique()
@@ -135,6 +138,7 @@ def main(reduction_factor, index):
     #                 linear_model += planting_area[crop, region, year, season] <= 1
 
 
+
     # 计算每种作物的预期销售量，为了目标函数服务
     def get_expected_sales(crop, season):
         # need to sum over all regions
@@ -165,18 +169,21 @@ def main(reduction_factor, index):
     def get_total_yield(crop, year):
         return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) for region in regions for season in seasons)
     
+    def my_max(a, b):
+        return a if a >= b else b
+    
     def get_profit(crop, year):
         if get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季'):
-            return lpSum(planting_area[(crop, region, year, season)]
+            return my_max(lpSum(planting_area[(crop, region, year, season)]
                          * (get_yield_per_acre(crop, region) * get_price(crop, season) - get_cost(crop, region))
                         for region in regions for season in seasons
-                    )
+                    ), 0)
         else:
-            return lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) - get_expected_sales(crop, season))
+            return my_max(lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) - get_expected_sales(crop, season))
                          * get_price(crop, season) * (1 - reduction_factor) 
                          for region in regions for season in seasons) \
                     + lpSum(get_expected_sales(crop, season) * get_price(crop, season) for season in seasons) \
-                    - lpSum(planting_area[(crop, region, year, season)] * get_cost(crop, region) for region in regions for season in seasons)
+                    - lpSum(planting_area[(crop, region, year, season)] * get_cost(crop, region) for region in regions for season in seasons), 0)
 
     # 目标函数, 超出预期销售量的部分，价格乘以 reduction_factor
     linear_model += lpSum(get_profit(crop, year) for crop in crops for year in years)
