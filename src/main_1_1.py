@@ -71,7 +71,7 @@ def main(reduction_factor, index):
         for region in full_table['种植地块']:
             for year in years:
                 for season in seasons:
-                    linear_model += (planting_area[crop, region, year, season] >= 0.3*region_areas[region])
+                    linear_model += (planting_area[crop, region, year, season] >= 0.3*region_areas[region]) or (planting_area[crop, region, year, season] == 0)
         
 
     # 11. 不能超出地块面积
