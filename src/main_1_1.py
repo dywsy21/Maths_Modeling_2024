@@ -80,10 +80,10 @@ def main(reduction_factor, index):
         
 
     # 11. 不能超出地块面积
-    # for region in regions:
-    #     for year in years:
-    #         for season in seasons:
-    #             linear_model += lpSum(planting_area[crop, region, year, season] for crop in crops) <= region_areas[region]
+    for region in regions:
+        for year in years:
+            for season in seasons:
+                linear_model += lpSum(planting_area[crop, region, year, season] for crop in crops) <= region_areas[region]
 
 
     # 12. 每种作物须满足相应的种植条件
