@@ -113,7 +113,12 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 \end{table}
 
 如下是目标函数的定义：\newline
-$Total\_profit = \sum_{c, y}(profit(r, s)) \newline = $
+\begin{equation}
+    Total\_profit = \sum_{c, y} \begin{cases} 
+    profit(r, s), & \text{if condition 1} \\
+    other\_profit(r, s), & \text{if condition 2}
+    \end{cases}
+\end{equation}
 
 
 
