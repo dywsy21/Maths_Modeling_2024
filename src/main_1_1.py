@@ -20,6 +20,7 @@ def main(reduction_factor, index):
         else:
             region_to_type[row['种植地块']] += row['种植面积/亩']
             
+            
     region_to_type = dict(zip(full_table['种植地块'],full_table['地块类型']))
 
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
