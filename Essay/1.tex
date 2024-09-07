@@ -140,8 +140,10 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 目标函数为使得如下的变量最大，也即使总利润最大：\newline
 \begin{equation}
     Total\_profit = \sum_{c, y} profit(r, s) = \begin{cases} 
-        \sum_{c, y}(\sum_{r, s} A_{c, r, y, s} \cdot(Y_{c, r} \cdot P_{c, s} - C_{c, r})), & if production(c) \leq S_c \\
-        \sum_{c, y}(\sum_{r, s}()), & if       production(c) > S_c
+        \sum_{c, y}(\sum_{r, s} x_{c, r, y, s} \cdot(Y_{c, r} \cdot P_{c, s} - C_{c, r})), & if production(c) \leq S_c \\
+        \sum_{c, y}(\sum_{r, s}(Y_{c, r} \cdot x_{c, r, y, s} - E_{c, s}) \cdot P_{c, s} 
+                    + \sum_{s}(E_{c, s} \cdot P_{c, s})
+                    - \sum_{r, s}(x_{c, r, y, s} \cdot C_{c, r})), & if production(c) > S_c
     \end{cases}
 \end{equation}
 
