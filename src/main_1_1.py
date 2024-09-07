@@ -16,8 +16,8 @@ def main(reduction_factor, index):
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
     # Create decision variables: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season] and the decision to plant or not
-    planting_area = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons), lowBound=0, cat='Continuous')
-    # planting_decision = LpVariable.dicts("planting_decision", ((crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons), cat=LpBinary)
+    planting_area = LpVariable.dicts("planting_area", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], lowBound=0, cat='Continuous')
+    planting_decision = LpVariable.dicts("planting_decision", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], cat='Binary')
 
     # # 加十三个约束条件：
     # # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。 [已被12包含]
