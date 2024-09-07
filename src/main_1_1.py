@@ -120,7 +120,7 @@ def main(reduction_factor, index):
 
 
     # 计算每种作物的预期销售量，为了目标函数服务
-    crop_to_expected_sales = {}
+    crop_to_expected_sales = {} # 斤
     for i, row in file2.iterrows():
         if row['作物名称'] not in crop_to_expected_sales:
             crop_to_expected_sales[row['作物名称']] = 0
