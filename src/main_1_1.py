@@ -108,7 +108,7 @@ def main(reduction_factor, index):
                 seasons = land_season[1].split(' ')
                 land_seasons_dict[land] = seasons
             else:
-                land_seasons_dict[land] = ['单季']
+                land_seasons_dict[land] = ['第一季']
         crop_to_condition[row['作物名称']] = land_seasons_dict
     # print(crop_to_condition)
 
@@ -118,10 +118,10 @@ def main(reduction_factor, index):
                 for season in seasons:
                     if region_areas[region] in crop_to_condition[crop]:
                         # print(season not in crop_to_condition[crop][region_to_type[region]], end=' ')
-                        if crop_to_condition[crop][region_areas[region]] == ['单季']:
-                            # print('2！', end=' ')
-                            linear_model += planting_decision[(crop, region, year, '第二季')] == 0
-                        elif season not in crop_to_condition[crop][region_areas[region]]:
+                        # if crop_to_condition[crop][region_areas[region]] == ['单季']:
+                        #     # print('2！', end=' ')
+                        #     linear_model += planting_decision[(crop, region, year, '第二季')] == 0
+                        if season not in crop_to_condition[crop][region_areas[region]]:
                             # print('1！', end=' ')
                             linear_model += planting_decision[(crop, region, year, season)] == 0
                         
