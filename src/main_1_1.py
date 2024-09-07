@@ -33,16 +33,16 @@ def main(reduction_factor, index):
 
     for region in regions:
         for year in years:
-            if region == '水浇地':
+            if region_to_type[region] == '水浇地':
                 second_season_constraint = lpSum(planting_decision[(crop, region, year, '第二季')] for crop in second_season_allowed_crops)
                 linear_model += (second_season_constraint <= 1)
 
-    # 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。
-    for year in years:
-        for i, row in full_table.iterrows():
-            if row['作物名称'] in ['大白菜', '白萝卜', '红萝卜'] and row['地块类型'] == '水浇地':
-                linear_model += planting_decision[row['作物名称'], row['种植地块'], year, '第一季'] == 0
-                
+    # 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。  [已被12包含]
+    # Already included in 12
+    # for year in years:
+    #     for i, row in full_table.iterrows():
+    #         if row['作物名称'] in ['大白菜', '白萝卜', '红萝卜'] and row['地块类型'] == '水浇地':
+    #             linear_model += planting_decision[row['作物名称'], row['种植地块'], year, '第一季'] == 0            
 
     # 5. 普通大棚每年种植两季作物，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外），第二季只能种植食用菌。[已被12包含]
     # Already included in 12
@@ -55,17 +55,17 @@ def main(reduction_factor, index):
 
 
     # 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
-    # bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
-    # for region in regions:
-    #     for y_begin in range(2024, 2029):
-    #         linear_model += lpSum(planting_decision[crop, region, year, season] for crop in bean_crops 
-    #                               for year in range(y_begin, y_begin + 3) for season in seasons) >= 1
+    bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
+    for region in regions:
+        for y_begin in range(2024, 2029):
+            linear_model += lpSum(planting_decision[crop, region, year, season] for crop in bean_crops 
+                                  for year in range(y_begin, y_begin + 3) for season in seasons) >= 1
 
     # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
-    # Ensure planting_decision is used in constraints
-    for crop in crops:
-        for season in seasons:
-            linear_model += lpSum(planting_decision[crop, region, year, season] for region in regions for year in years) <= 5
+    for year in years:
+        for crop in crops:
+            for season in seasons:
+                linear_model += lpSum(planting_decision[crop, region, year, season] for region in regions) <= 5
 
 
 
@@ -111,7 +111,7 @@ def main(reduction_factor, index):
                         # print(season not in crop_to_condition[crop][region_to_type[region]], end=' ')
                         if crop_to_condition[crop][region_to_type[region]] == ['单季']:
                             # print('2！', end=' ')
-                            linear_model += (planting_decision[(crop, region, year, '第一季')] + planting_area[(crop, region, year, '第二季')] <= 1)
+                            linear_model += (planting_decision[(crop, region, year, '第一季')] + planting_decision[(crop, region, year, '第二季')] <= 1)
                         elif season not in crop_to_condition[crop][region_to_type[region]]:
                             # print('1！', end=' ')
                             linear_model += planting_decision[(crop, region, year, season)] == 0
