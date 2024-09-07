@@ -123,16 +123,17 @@ def main(reduction_factor, index):
 
     # 计算每种作物的预期销售量，为了目标函数服务
     crop_to_expected_sales = {} # 斤
-    for i, row in file2.iterrows():
-        if row['作物名称'] not in crop_to_expected_sales:
+    for i, row in full_table.iterrows():
+        if row['作物名称'] not in crop_to_expected_sales.keys():
             crop_to_expected_sales[row['作物名称']] = 0
-        else:
-            crop_to_expected_sales[row['作物名称']] += row['预期销售量/斤']
+        crop_to_expected_sales[row['作物名称']] += row['预期销售量/斤']
+    # print(crop_to_expected_sales)
 
     # 创建两个dict，分别存储每种作物的种植成本和价格，为了目标函数服务
     crop_to_cost = dict(zip(full_table['作物名称'], full_table['种植成本/(元/亩)']))
     crop_to_price = dict(zip(full_table['作物名称'], full_table['平均价格/元']))
     # print(crop_to_cost, '\n\n\n\n', crop_to_price)
+
     def get_yield(crop, region): # 斤/亩
         for i, row in full_table.iterrows():
             if row['作物名称'] == crop and row['种植地块'] == region:
@@ -144,6 +145,7 @@ def main(reduction_factor, index):
 
     def get_profit(crop, year, season):
         if get_total_planting_area(crop, year, season) >= crop_to_expected_sales[crop]:
+            print("Crop: {} ".format(crop), crop_to_expected_sales[crop], crop_to_price[crop])
             return max(0, crop_to_price[crop] * get_yield(crop, region) * (1 - reduction_factor) - crop_to_cost[crop]) * (get_total_planting_area(crop, year, season) - crop_to_expected_sales[crop]) + crop_to_expected_sales[crop] * crop_to_price[crop] - crop_to_cost[crop] * get_total_planting_area(crop, year, season)
         else:
             return (crop_to_price[crop] * get_yield(crop, region) - crop_to_cost[crop]) * get_total_planting_area(crop, year, season)
