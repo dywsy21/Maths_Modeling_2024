@@ -3,3 +3,12 @@
 附件/附件(xlsx)/~$附件1.xlsx
 附件/附件(xlsx)/~$附件2.xlsx
 附件/附件(xlsx)/附件1.xlsx
+Essay/*.aux
+Essay/*.log
+Essay/*.out
+Essay/*.pdf
+Essay/*.synctex.gz
+Essay/*.toc
+Essay/*.fdb_latexmk
+Essay/*.fls
+Essay/*.xdv
