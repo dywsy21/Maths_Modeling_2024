@@ -168,7 +168,7 @@ def main(reduction_factor, index):
 
     def get_cost(crop, region):
         for i, row in full_table.iterrows():
-            if row['作物名称'] == crop and row['种植地块'] == region:
+            if row['作物名称'] == crop and row['地块类型'] == region_to_type[region]:
                 return row['种植成本/(元/亩)']
         return 0
     

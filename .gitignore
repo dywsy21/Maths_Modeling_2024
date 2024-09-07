@@ -11,3 +11,7 @@ Essay/*.toc
 Essay/*.fdb_latexmk
 Essay/*.fls
 Essay/*.xdv
+Essay/1.aux
+Essay/1.log
+Essay/1.pdf
+Essay/1.synctex.gz
