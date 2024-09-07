@@ -58,6 +58,11 @@ def main():
             model += lpSum()
 
     # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
+    small_value = 0
+    for crop in full_table['作物名称'].unique():
+        for season in full_table['种植季次'].unique():
+            model += (lpSum((x[crop, region, year, season] > small_value) for region in full_table['种植地块'].unique() for year in years) <= 5, f"{crop}_{season}_地块数限制")
+
 
 
     # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%。
