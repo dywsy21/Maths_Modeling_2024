@@ -14,7 +14,7 @@ def main(reduction_factor, index):
     
     # Create two sole decision variables: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season] and the decision to plant or not
     planting_area = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in full_table['作物名称'].unique() for region in full_table['种植地块'].unique() for year in years for season in seasons), lowBound=0, cat='Continuous')
-    planting_decision = LpVariable.dicts("planting_decision", ((crop, region, year, season) for crop in full_table['作物名称'].unique() for region in full_table['种植地块'].unique() for year in years for season in seasons), cat='Binary')
+    planting_decision = LpVariable.dicts("planting_decision", ((crop, region, year, season) for crop in full_table['作物名称'].unique() for region in full_table['种植地块'].unique() for year in years for season in seasons), cat=LpBinary)
 
     # 加十三个约束条件：
     # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。 [已被12包含]
