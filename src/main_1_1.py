@@ -25,7 +25,12 @@ def main():
 
 
     # 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
-
+    for region in full_table['种植地块'].unique():
+        for year in years:
+            linear_model += lpSum(x[crop, region, year, '第一季'] for crop in full_table['作物名称'].unique() if crop not in ['大白菜', '白萝卜', '红萝卜']) <= 1
+            linear_model += lpSum(x[crop, region, year, '第二季'] for crop in full_table['作物名称'].unique() if crop in ['大白菜', '白萝卜', '红萝卜']) <= 1
+            linear_model += lpSum(x[crop, region, year, '第二季'] for crop in full_table['作物名称'].unique() if crop not in ['大白菜', '白萝卜', '红萝卜']) == 0
+            
 
     # 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。
     for year in years:
