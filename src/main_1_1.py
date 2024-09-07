@@ -59,13 +59,12 @@ def main(reduction_factor, index):
     for region in full_table['种植地块']:
         for y_begin in range(2024, 2029):
             linear_model += lpSum(planting_area[crop, region, year, season] for crop in bean_crops 
-                                  for year in range(y_begin, y_begin+3) for season in seasons) > 0
+                                  for year in range(y_begin, y_begin+3) for season in seasons) >= 0.0001
 
     # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
-    small_value = 0
     for crop in full_table['作物名称'].unique():
         for season in full_table['种植季次'].unique():
-            linear_model += lpSum((planting_area[crop, region, year, season] > small_value) for region in full_table['种植地块'].unique() for year in years) <= 5
+            linear_model += lpSum((planting_area[crop, region, year, season] >= 0.0001) for region in full_table['种植地块'].unique() for year in years) <= 5
 
 
 
@@ -115,10 +114,10 @@ def main(reduction_factor, index):
         for region in full_table['种植地块'].unique():
             for year in years:
                 # 同一年的第一季和第二季
-                linear_model += ((planting_area[crop, region, year, '第一季']>0) and (planting_area[crop, region, year, '第二季']>0)) == False
+                linear_model += ((planting_area[crop, region, year, '第一季'] >= 0.0001) and (planting_area[crop, region, year, '第二季']>= 0.0001)) == False
                 # 上一年第二季和下一年第一季
                 if year < 2030:
-                    linear_model += ((planting_area[crop, region, year, '第二季']>0) and (planting_area[crop, region, year+1, '第一季']>0)) == False
+                    linear_model += ((planting_area[crop, region, year, '第二季']>= 0.0001) and (planting_area[crop, region, year+1, '第一季']>= 0.0001)) == False
 
 
 
@@ -143,7 +142,7 @@ def main(reduction_factor, index):
 
 
     def get_profit(crop, year, season):
-        if get_total_planting_area(crop, year, season) > crop_to_expected_sales[crop]:
+        if get_total_planting_area(crop, year, season) >= crop_to_expected_sales[crop]:
             return max(0, crop_to_price[crop] * get_yield(crop, region) * (1 - reduction_factor) - crop_to_cost[crop]) * (get_total_planting_area(crop, year, season) - crop_to_expected_sales[crop]) + crop_to_expected_sales[crop] * crop_to_price[crop] - crop_to_cost[crop] * get_total_planting_area(crop, year, season)
         else:
             return (crop_to_price[crop] * get_yield(crop, region) - crop_to_cost[crop]) * get_total_planting_area(crop, year, season)
