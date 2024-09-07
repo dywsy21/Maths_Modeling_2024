@@ -96,19 +96,19 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 
 \subsubsection{模型的建立}
-在模型建立之前，需要定义决策变量、目标函数和约束条件，决策变量为第 i 块地在第 k 年第 t 季种植第 j 种作物的面积和第 i 块地在第 k 年第 t 季种植是否种植第 j 种作物，具体如下表所示：
+在模型建立之前，需要定义决策变量、目标函数和约束条件，关于决策变量和参数，具体如下表所示：
 \begin{table}[ht]
     \centering
     \begin{tabular}{|l|l|l|}
         \hline
         类型 & 参数 & 具体含义 \\ \hline
         \multirow{2}{*}{决策变量} & $x_{c,r,y,s}$ & 表示作物c(crop)在地块r(region)于第y(year)年第s(season)季的种植面积 \\ \cline{2-3}
-        ~ & $y_{i,j,k,t}$ & \makecell{表示地块r于第y年第s季是否种植作物c的二值变量，\\加入它可以让建模过程更清晰健壮} \\ \hline
-        \multirow{5}{*}{\centering 参数} & $P_{j,k,t}$ & 表示第 j 种作物在第 k 年第 t 季的销售价格 \\ \cline{2-3}
-        ~ & $Y_{j,k,t}$ & 表示第 j 种作物在第 k 年第 t 季的单位面积产量（亩产量） \\ \cline{2-3}
-        ~ & $S_{j,k,t}$ & 表示第 j 种作物在第 k 年第 t 季的预期销售量 \\ \cline{2-3}
-        ~ & $A_i$ & 表示第 i 块地的总可用种植面积 \\ \cline{2-3}
-        ~ & $M_i$ & 表示第 i 块地的作物种植面积下限 \\ \hline
+        ~ & $y_{c,r,y,s}$ & \makecell{表示地块r于第y年第s季是否种植作物c的二值变量，\\加入它可以让建模过程更清晰健壮} \\ \hline
+        \multirow{5}{*}{\centering 参数} & $P_{c,y,s}$ & 表示作物c于第y年第s季的销售价格 \\ \cline{2-3}
+        ~ & $Y_{c,y,s}$ & 表示作物c于第y年第s季的单位面积产量（亩产量） \\ \cline{2-3}
+        ~ & $S_{c,y,s}$ & 表示作物c于第y年第s季的预期销售量 \\ \cline{2-3}
+        ~ & $A_c$ & 表示地块c的总可用种植面积 \\ \cline{2-3}
+        ~ & $M_c$ & 表示地块c的作物种植面积下限 \\ \hline
     \end{tabular}
 \end{table}
 \subsubsection{模型的求解}
