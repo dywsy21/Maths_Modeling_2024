@@ -15,15 +15,14 @@ def main(reduction_factor, index):
 
     region_areas = {}
     for index, row in full_table.iterrows():
-        if row['种植地块'] not in region_to_type:
-            region_to_type[row['种植地块']] = row['种植面积/亩']
+        if row['种植地块'] not in region_areas:
+            region_areas[row['种植地块']] = row['种植面积/亩']
         else:
-            region_to_type[row['种植地块']] += row['种植面积/亩']
+            region_areas[row['种植地块']] += row['种植面积/亩']
             
-            
-    region_to_type = dict(zip(full_table['种植地块'],full_table['地块类型']))
-
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
+    
+    region_to_type = dict(zip(full_table['种植地块'],full_table['地块类型']))
     
     # Create decision variables: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season] and the decision to plant or not
     planting_area = LpVariable.dicts("planting_area", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], lowBound=0, cat='Continuous')
@@ -43,7 +42,7 @@ def main(reduction_factor, index):
 
     for region in regions:
         for year in years:
-            if region_to_type[region] == '水浇地':
+            if region_areas[region] == '水浇地':
                 second_season_constraint = lpSum(planting_decision[(crop, region, year, '第二季')] for crop in second_season_allowed_crops)
                 linear_model += (second_season_constraint <= 1)
 
@@ -117,12 +116,12 @@ def main(reduction_factor, index):
         for region in regions:
             for year in years:
                 for season in seasons:
-                    if region_to_type[region] in crop_to_condition[crop]:
+                    if region_areas[region] in crop_to_condition[crop]:
                         # print(season not in crop_to_condition[crop][region_to_type[region]], end=' ')
-                        if crop_to_condition[crop][region_to_type[region]] == ['单季']:
+                        if crop_to_condition[crop][region_areas[region]] == ['单季']:
                             # print('2！', end=' ')
                             linear_model += planting_decision[(crop, region, year, '第二季')] == 0
-                        elif season not in crop_to_condition[crop][region_to_type[region]]:
+                        elif season not in crop_to_condition[crop][region_areas[region]]:
                             # print('1！', end=' ')
                             linear_model += planting_decision[(crop, region, year, season)] == 0
                         
