@@ -1,7 +1,7 @@
 import pandas as pd
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
 
-def main():
+def main(reduction_factor, index):
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
 
@@ -99,5 +99,26 @@ def main():
                             linear_model += not (x[(crop, region, year, '第一季')] and x[(crop, region, year, '第二季')])
 
 
+    # 计算每种作物的预期销售量，为了目标函数服务
+    crop_to_expected_sales = {}
+    for i, row in file2.iterrows():
+        if row['作物名称'] not in crop_to_expected_sales:
+            crop_to_expected_sales[row['作物名称']] = 0
+        else:
+            crop_to_expected_sales[row['作物名称']] += row['预期销售量/斤']
+
+    # 创建三个dict，分别存储每种作物的价格和销售量
+    crop_to_price = dict(zip(full_table['作物名称'], full_table['种植成本/(元/亩)']))
+    crop_to_expected_sales = dict(zip(full_table['作物名称'], full_table['预期销售量/斤']))
+
+    # 目标函数
+    # 超出预期销售量的部分，价格乘以 reduction_factor
+    
+
+
+
+
+
 if __name__ == '__main__':
-    main()
+    main(0, 1)
+    main(0.5, 2)
