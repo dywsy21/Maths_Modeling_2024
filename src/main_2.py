@@ -50,4 +50,6 @@ def main(reduction_factor, index):
     # cost change rate
     cost_rate = 1.05
 
+    def gen_inst()
+
 
