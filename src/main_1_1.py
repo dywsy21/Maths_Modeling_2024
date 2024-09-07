@@ -14,7 +14,7 @@ def main(reduction_factor, index):
     # Create a sole decision variable: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season]
     x = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in full_table['作物名称'] for region in full_table['种植地块'].unique() for year in years for season in full_table['种植季次'].unique()), lowBound=0, cat='Continuous')
 
-    # 加十二个约束条件：
+    # 加十三个约束条件：
     # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。 [已被12包含]
     # Already included in 12
 
@@ -125,12 +125,23 @@ def main(reduction_factor, index):
         else:
             crop_to_expected_sales[row['作物名称']] += row['预期销售量/斤']
 
-    # 创建两个dict，分别存储每种作物的种植成本和价格
-    crop_to_price = dict(zip(full_table['作物名称'], full_table['种植成本/(元/亩)']))
-     = dict(zip(full_table['作物名称'], full_table['预期销售量/斤']))
+    # 创建两个dict，分别存储每种作物的种植成本和价格，为了目标函数服务
+    crop_to_cost = dict(zip(full_table['作物名称'], full_table['种植成本/(元/亩)']))
+    crop_to_price = dict(zip(full_table['作物名称'], full_table['销售单价/(元/斤)']))
+    def get_yield(crop, region):
+        for i, row in full_table.iterrows():
+            if row['作物名称'] == crop and row['种植地块'] == region:
+                return row['亩产量']
 
     # 目标函数
     # 超出预期销售量的部分，价格乘以 reduction_factor
+    linear_model += lpSum(x[crop, region, year, season] * (max(crop_to_price[crop] * get_yield(crop, region) * (1 - reduction_factor) - crop_to_cost[crop], 0)
+                            if x[crop, region, year, season] > crop_to_expected_sales[crop] 
+                            else crop_to_price[crop] * get_yield(crop, region) - crop_to_cost[crop]) 
+                            for crop in full_table['作物名称'].unique()
+                            for region in full_table['种植地块'].unique() 
+                            for year in years 
+                            for season in full_table['种植季次'].unique())
     
 
 
@@ -138,5 +149,5 @@ def main(reduction_factor, index):
 
 
 if __name__ == '__main__':
-    main(0, 1)
+    main(1, 1)
     main(0.5, 2)
