@@ -21,6 +21,8 @@ def main():
     # 2. 水浇地每年可以单季种植水稻或[两季种植蔬菜作物]。 []被12包含
     for region in full_table['种植地块'].unique():
         for year in years:
+            linear_model += not (x['水稻', region, year, '第一季'] and x['水稻', region, year, '第二季'])
+
             
 
 
