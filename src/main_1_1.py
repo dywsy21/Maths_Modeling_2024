@@ -131,7 +131,8 @@ def main(reduction_factor, index):
 
     # 创建两个dict，分别存储每种作物的种植成本和价格，为了目标函数服务
     crop_to_cost = dict(zip(full_table['作物名称'], full_table['种植成本/(元/亩)']))
-    crop_to_price = dict(zip(full_table['作物名称'], full_table['销售单价/(元/斤)']))
+    crop_to_price = dict(zip(full_table['作物名称'], full_table['平均价格/元']))
+    # print(crop_to_cost, '\n\n\n\n', crop_to_price)
     def get_yield(crop, region): # 斤/亩
         for i, row in full_table.iterrows():
             if row['作物名称'] == crop and row['种植地块'] == region:
@@ -151,7 +152,7 @@ def main(reduction_factor, index):
     linear_model += lpSum(get_profit(crop, year, season)
                             for crop in full_table['作物名称'].unique()
                             for year in years 
-                            for season in full_table['种植季次'].unique())
+                            for season in seasons)
     
 
 
