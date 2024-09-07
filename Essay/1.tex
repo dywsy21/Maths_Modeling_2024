@@ -104,9 +104,9 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
         类型 & 参数 & 具体含义 \\ \hline
         \multirow{2}{*}{决策变量} & $x_{c,r,y,s}$ & 表示作物c(crop)在地块r(region)于第y(year)年第s(season)季的种植面积 \\ \cline{2-3}
         ~ & $y_{c,r,y,s}$ & \makecell{表示地块r于第y年第s季是否种植作物c的二值变量，\\加入它可以让建模过程更清晰健壮} \\ \hline
-        \multirow{5}{*}{\centering 参数} & $P_{c,y,s}$ & 表示作物c于第y年第s季的销售价格 \\ \cline{2-3}
-        ~ & $Y_{c,y,s}$ & 表示作物c于第y年第s季的单位面积产量（亩产量） \\ \cline{2-3}
-        ~ & $S_{c,y,s}$ & 表示作物c于第y年第s季的预期销售量 \\ \cline{2-3}
+        \multirow{5}{*}{\centering 参数} & $P_{c,s}$ & 表示作物c于第s季的销售价格 \\ \cline{2-3}
+        ~ & $Y_{c,r}$ & 表示作物c于地块r的单位面积产量（亩产量） \\ \cline{2-3}
+        ~ & $S_{c}$ & 表示作物c的预期销售量 \\ \cline{2-3}
         ~ & $A_c$ & 表示地块c的总可用种植面积 \\ \cline{2-3}
         ~ & $M_c$ & 表示地块c的作物种植面积下限 \\ \hline
     \end{tabular}
@@ -115,14 +115,14 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 目标函数为使得如下的变量最大，也即使总利润最大：\newline
 \begin{equation}
     Total\_profit = \sum_{c, y} \begin{cases} 
-    profit(r, s), & \text{if condition 1} \\
+    profit(r, s), & \text{if production(c) } \\
     other\_profit(r, s), & \text{if condition 2}
     \end{cases}
 \end{equation}
 
 其中：
 \begin{equation}
-    production(r, s) = \sum_{r, s} Y_{c,r} \cdot x_{c,r,y,s}
+    production(c) = \sum_{r, s} x_{c,r,y,s} \cdot Y_{c,r}
 \end{equation}
 
 \subsubsection{模型的求解}
