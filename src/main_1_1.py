@@ -55,7 +55,8 @@ def main():
     bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
     for region in full_table['种植地块']:
         for y_begin in range(2024, 2029):
-            model += lpSum()
+            linear_model += lpSum(x[crop, region, year, season] for crop in bean_crops 
+                                  for year in range(y_begin, y_begin+3) for season in seasons) > 0
 
     # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
 
@@ -65,7 +66,7 @@ def main():
         for region in full_table['种植地块']:
             for year in years:
                 for season in seasons:
-                    linear_model += x[crop, region, year, season] >= 0.3*region_areas[region]
+                    linear_model += (x[crop, region, year, season] >= 0.3*region_areas[region])
         
 
     # 11. 不能超出地块面积
