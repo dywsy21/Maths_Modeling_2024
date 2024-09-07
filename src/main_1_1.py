@@ -8,6 +8,7 @@ def main(reduction_factor, index):
     seasons = ['第一季','第二季']
     years = list(range(2024, 2031))
     region_areas = dict(zip(full_table['种植地块'],full_table['种植面积/亩']))
+    region_to_type = dict(zip(full_table['种植地块'],full_table['地块类型']))
 
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
@@ -93,16 +94,20 @@ def main(reduction_factor, index):
             else:
                 land_seasons_dict[land] = ['单季']
         crop_to_condition[row['作物名称']] = land_seasons_dict
+    print(crop_to_condition)
 
-    for crop in full_table['作物名称']:
+    for crop in full_table['作物名称'].unique():
         for region in full_table['种植地块'].unique():
             for year in years:
-                for season in full_table['种植季次'].unique():
-                    if region in crop_to_condition[crop]:
-                        if season not in crop_to_condition[crop][region]:
+                for season in seasons:
+                    if region_to_type[region] in crop_to_condition[crop]:
+                        if crop_to_condition[crop][region_to_type[region]] == ['单季']:
+                            print('2！')
+                            linear_model += (planting_area[(crop, region, year, '第一季')] and planting_area[(crop, region, year, '第二季')]) == False
+                        elif season not in crop_to_condition[crop][region_to_type[region]]:
+                            print('1！')
                             linear_model += planting_area[(crop, region, year, season)] == 0
-                        elif crop_to_condition[crop][region] == ['单季']:
-                            linear_model += not (planting_area[(crop, region, year, '第一季')] and planting_area[(crop, region, year, '第二季')])
+                        
     
     # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产
     # for crop in full_table['作物名称'].unique():
@@ -153,6 +158,7 @@ def main(reduction_factor, index):
                             for year in years 
                             for season in seasons)
     
+    print(linear_model.constraints)
     linear_model.solve()
 
     for k in years:
