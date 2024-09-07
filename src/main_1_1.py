@@ -162,7 +162,7 @@ def main(reduction_factor, index):
     
     def get_price(crop, season):
         for i, row in full_table.iterrows():
-            if row['作物名称'] == crop and row['种植地块'] == region:
+            if row['作物名称'] == crop and row['种植季次'] == season:
                 return row['平均价格/(元/斤)']
         return 0
 
