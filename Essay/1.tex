@@ -1,12 +1,11 @@
 \documentclass{cumcmthesis}
 
 
-
 \title{农作物种植策略优化}
 \tihao{C}
 \baominghao{C202409001213}
 \schoolname{复旦大学}
-\membera{王思宇}
+\membera{王思宇1111}
 \memberb{吕天一}
 \memberc{周思远}
 \supervisor{}
@@ -73,7 +72,16 @@
     \end{tabular}
 \end{table}
 
+\section{准备工作/预处理}
+\subsection{.csv文件的生成}
+我们发现即使panda库中有read\_excel()函数可以直接读取附件中的.xlsx文件，但是其有一系列问题，例如.xlsx中合并的单元格会导致数据读取错误，只有第一个单元格的数据能被读取，并且读取的速度较慢等，因此我们选择将数据转换为.csv格式。.csv作为文本格式，相较于.xlsx格式更加方便处理。因此，我们将原始数据转换为.csv格式，以便于后续的数据处理和模型构建。src/utils/xlsx to csv/main.py中详细记录了生成.csv文件的源代码。
 
+\subsection{full\_table.csv的生成}
+在仔细阅读附件中的数据后，我们发现附件中的数据分为两部分，一部分是各类农作物的种植成本、亩产量、销售价格和预期销售量等数据，另一部分是各地块和大棚的类型、面积和种植历史数据。有一个很大的问题是为了方便后续的数据处理和模型构建，我们将这两部分数据合并为一个完整的数据表，即full\_table.csv。full\_table.csv中包含以下数据：种植地块,作物编号,作物名称,作物类型,种植面积/亩,种植季次,地块类型,亩产量/斤,种植成本/(元/亩),销售单价/(元/斤),预期销售量/斤,平均价格/(元/斤)。src/utils/generate\_full\_table/generate\_full\_table.py中详细记录了生成full\_table.csv的源代码。
+
+\subsection{附件1\_乡村种植的农作物.csv 的格式优化}
+在阅读附件1\_乡村种植的农作物.csv后，我们发现该文件中的数据格式不够规范，例如有些数据中包含了多余的空格，有些数据中的数字格式不统一等。为了方便后续的数据处理和模型构建，我们对附件1\_乡村种植的农作物.csv进行了格式优化。具体优化后的格式统一为：(([地块类型](:"第一季" ("第二季")?)?);)+(([地块类型](:"第一季" ("第二季")?)?))
+src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附件1\_乡村种植的农作物.csv的源代码。
 
 
 \section{模型的建立与求解}
