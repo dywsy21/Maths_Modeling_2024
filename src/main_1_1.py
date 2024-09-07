@@ -62,7 +62,7 @@ def main(reduction_factor, index):
     small_value = 0
     for crop in full_table['作物名称'].unique():
         for season in full_table['种植季次'].unique():
-            linear_model += (lpSum((x[crop, region, year, season] > small_value) for region in full_table['种植地块'].unique() for year in years) <= 5, f"{crop}_{season}_地块数限制")
+            linear_model += lpSum((x[crop, region, year, season] > small_value) for region in full_table['种植地块'].unique() for year in years) <= 5
 
 
 
