@@ -96,7 +96,7 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 
 \subsubsection{模型的建立}
-在模型建立之前，需要定义决策变量、目标函数和约束条件，关于决策变量和参数，具体如下表所示：
+在模型建立之前，需要定义决策变量、目标函数和约束条件，关于决策变量和相应的参数，具体如下表所示：
 \begin{table}[ht]
     \centering
     \begin{tabular}{|l|l|l|}
@@ -111,6 +111,13 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
         ~ & $M_c$ & 表示地块c的作物种植面积下限 \\ \hline
     \end{tabular}
 \end{table}
+
+如下是目标函数的定义：\newline
+$Total\_profit = \sum_{c, y}(profit(r, s)) \newline = $
+
+
+
 \subsubsection{模型的求解}
+单纯形法（Simplex Algorithm）是最常用的线性规划求解算法，基于迭代移动的方法，在可行解的顶点之间跳跃，直到找到最优解。它适用于线性规划问题，并且非常有效。
 
 \end{document}
