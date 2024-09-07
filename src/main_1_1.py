@@ -24,7 +24,12 @@ def main():
 
 
     # 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。
-
+    for region in full_table['种植地块'].unique():
+        for year in years:
+            for crop in full_table['作物名称'].unique():
+                if crop in ['大白菜', '白萝卜', '红萝卜']:
+                    linear_model += lpSum(x[crop, region, year, '第一季']) == 0
+                
 
     # 5. 普通大棚每年种植两季作物，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外），第二季只能种植食用菌。
 
@@ -45,7 +50,7 @@ def main():
     for region in full_table['种植地块']:
         for year in years:
             linear_model += lpSum(x[crop, region, year, season] for crop in full_table['作物名称'] 
-                                  for season in full_table['种植季次'].unique()) >= 0.3*region_areas[region]
+                                  for season in full_table['种植季次'].unique()) >= 0.3 * region_areas[region]
     
 
     # 11. 不能超出地块面积
