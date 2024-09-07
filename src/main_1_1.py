@@ -12,7 +12,7 @@ def main(reduction_factor, index):
 
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
-    # Create two sole decision variables: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season] and the decision to plant or not
+    # Create decision variables: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season] and the decision to plant or not
     planting_area = LpVariable.dicts("planting_area", ((crop, region, year, season) for crop in full_table['作物名称'].unique() for region in full_table['种植地块'].unique() for year in years for season in seasons), lowBound=0, cat='Continuous')
     planting_decision = LpVariable.dicts("planting_decision", ((crop, region, year, season) for crop in full_table['作物名称'].unique() for region in full_table['种植地块'].unique() for year in years for season in seasons), cat=LpBinary)
 
@@ -59,6 +59,7 @@ def main(reduction_factor, index):
     #                               for year in range(y_begin, y_begin+3) for season in seasons) >= 1
 
     # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
+    # Ensure planting_decision is used in constraints
     for crop in full_table['作物名称'].unique():
         for season in seasons:
             linear_model += lpSum(planting_decision[crop, region, year, season] for region in full_table['种植地块'].unique() for year in years) <= 5
@@ -116,10 +117,10 @@ def main(reduction_factor, index):
         for region in full_table['种植地块'].unique():
             for year in years:
                 # 同一年的第一季和第二季
-                linear_model += ((planting_decision[crop, region, year, '第一季'] and planting_decision[crop, region, year, '第二季']) == False)
+                linear_model += (planting_decision[crop, region, year, '第一季'] + planting_decision[crop, region, year, '第二季'] <= 1)
                 # 上一年第二季和下一年第一季
                 if year < 2030:
-                    linear_model += ((planting_decision[crop, region, year, '第二季'] and planting_decision[crop, region, year+1, '第一季']) == False)
+                    linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
 
 
 
