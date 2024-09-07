@@ -156,7 +156,7 @@ def main(reduction_factor, index):
 
     def get_yield_per_acre(crop, region): # 斤/亩
         for i, row in full_table.iterrows():
-            if row['作物名称'] == crop and row['种植地块'] == region:
+            if row['作物名称'] == crop and row['地块类型'] == region_to_type[region]:
                 return row['亩产量/斤']
         return 0
     
@@ -165,7 +165,7 @@ def main(reduction_factor, index):
             if row['作物名称'] == crop and row['种植季次'] == season:
                 return row['平均价格/(元/斤)']
         return 0
-
+    
     def get_cost(crop, region):
         for i, row in full_table.iterrows():
             if row['作物名称'] == crop and row['地块类型'] == region_to_type[region]:
