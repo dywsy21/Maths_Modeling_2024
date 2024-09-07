@@ -51,11 +51,11 @@ def main(reduction_factor, index):
 
 
     # 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
-    bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
-    for region in full_table['种植地块']:
-        for y_begin in range(2024, 2029):
-            linear_model += lpSum(planting_area[crop, region, year, season] for crop in bean_crops 
-                                  for year in range(y_begin, y_begin+3) for season in seasons) >= 0.0001
+    # bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
+    # for region in full_table['种植地块']:
+    #     for y_begin in range(2024, 2029):
+    #         linear_model += lpSum(planting_area[crop, region, year, season] for crop in bean_crops 
+    #                               for year in range(y_begin, y_begin+3) for season in seasons) >= 0.0001
 
     # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
     # for crop in full_table['作物名称'].unique():
@@ -65,11 +65,11 @@ def main(reduction_factor, index):
 
 
     # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%。
-    # for crop in full_table['作物名称'].unique():
-    #     for region in full_table['种植地块']:
-    #         for year in years:
-    #             for season in seasons:
-    #                 linear_model += (planting_area[crop, region, year, season] >= 0.3*region_areas[region]) or (planting_area[crop, region, year, season] == 0)
+    for crop in full_table['作物名称'].unique():
+        for region in full_table['种植地块']:
+            for year in years:
+                for season in seasons:
+                    linear_model += (planting_area[crop, region, year, season] >= 0.3*region_areas[region]) or (planting_area[crop, region, year, season] == 0)
         
 
     # 11. 不能超出地块面积
@@ -101,11 +101,12 @@ def main(reduction_factor, index):
             for year in years:
                 for season in seasons:
                     if region_to_type[region] in crop_to_condition[crop]:
+                        print(season not in crop_to_condition[crop][region_to_type[region]], end=' ')
                         if crop_to_condition[crop][region_to_type[region]] == ['单季']:
-                            print('2！')
-                            linear_model += (planting_area[(crop, region, year, '第一季')] and planting_area[(crop, region, year, '第二季')]) == False
+                            # print('2！', end=' ')
+                            linear_model += (planting_area[(crop, region, year, '第一季')] == 0 and planting_area[(crop, region, year, '第二季')] == 0) == False
                         elif season not in crop_to_condition[crop][region_to_type[region]]:
-                            print('1！')
+                            # print('1！', end=' ')
                             linear_model += planting_area[(crop, region, year, season)] == 0
                         
     
@@ -158,7 +159,7 @@ def main(reduction_factor, index):
                             for year in years 
                             for season in seasons)
     
-    print(linear_model.constraints)
+    print(linear_model.constraints.items())
     linear_model.solve()
 
     for k in years:
