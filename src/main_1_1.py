@@ -170,6 +170,9 @@ def main(reduction_factor, index):
                                 if planting_area[j, i, k, t].varValue > 0)  # 只计算种植面积大于 0 的决策变量
         print(f"Year {k} 目标函数值: {yearly_obj_value}")
 
-if __name__ == '__main__':
+    # Check if all planting_decision variables are binary (0 or 1)
+    for var in planting_decision.values():
+        if var.varValue not in [0, 1]:
+            print(f"Variable {var.name} has a non-binary value: {var.varValue}")
     main(1, 1)
     # main(0.5, 2)
