@@ -10,7 +10,13 @@ def main(reduction_factor, index):
     regions = full_table['种植地块'].unique()
     crops = full_table['作物名称'].unique()
 
-    region_areas = dict(zip(full_table['种植地块'],full_table['种植面积/亩']))
+    region_areas = {}
+    for index, row in full_table.iterrows():
+        if row['种植地块'] not in region_to_type:
+            region_to_type[row['种植地块']] = row['种植面积/亩']
+        else:
+            region_to_type[row['种植地块']] += row['种植面积/亩']
+            
     region_to_type = dict(zip(full_table['种植地块'],full_table['地块类型']))
 
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
