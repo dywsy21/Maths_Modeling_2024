@@ -169,15 +169,17 @@ def main(reduction_factor):
     crop_dis = {
         '玉米': ['小麦'],
         '小麦': ['玉米'],
+        '豇豆': ['西红柿', '茄子'],
+        '西红柿': ['豇豆'],
+        '茄子': ['豇豆']
     }
     def sup_coef(crop, region, year, season):
-        if crop in crop_sup:
-            if sum(planting_decision[(_crop, region, year, season)] for _crop in crop_sup[crop]) >= 1:
-                return 1.2 # 互补作物假设增产20%
-            else:
-                return 1
-        else:
-            return 1
+        coef = 1.0
+        if crop in crop_sup and sum(planting_decision[(_crop, region, year, season)] for _crop in crop_sup[crop]) >= 1:
+            coef *= 1.2 # 互补作物假设增产20%
+        if crop in crop_dis and sum(planting_decision[(_crop, region, year, season)] for _crop in crop_dis[crop]) >= 1:
+            coef *= 0.7 # 互斥作物假设减产30%
+        return coef
     # object function
     def get_profit(crop, year):
         if get_total_yield(crop, year) * risk(crop, year) <= get_expected_sales_list(crop, '第一季')[year-2024] + get_expected_sales_list(crop, '第二季')[year-2024]:
