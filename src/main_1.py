@@ -128,21 +128,17 @@ def main(reduction_factor, index):
     # Already included in 12
 
 
-    # 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
-    second_season_allowed_crops = ['大白菜', '白萝卜', '红萝卜']
+    # # 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
+    # second_season_allowed_crops = ['大白菜', '白萝卜', '红萝卜']
 
-    for region in regions:
-        for year in years:
-            if region_areas[region] == '水浇地':
-                second_season_constraint = lpSum(planting_decision[(crop, region, year, '第二季')] for crop in second_season_allowed_crops)
-                linear_model += (second_season_constraint <= 1)
+    # for region in regions:
+    #     for year in years:
+    #         if region_areas[region] == '水浇地':
+    #             second_season_constraint = lpSum(planting_decision[(crop, region, year, '第二季')] for crop in second_season_allowed_crops)
+    #             linear_model += (second_season_constraint <= 1)
 
     # 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。  [已被12包含]
-    # Already included in 12
-    # for year in years:
-    #     for i, row in full_table.iterrows():
-    #         if row['作物名称'] in ['大白菜', '白萝卜', '红萝卜'] and row['地块类型'] == '水浇地':
-    #             linear_model += planting_decision[row['作物名称'], row['种植地块'], year, '第一季'] == 0            
+    # Already included in 12      
 
     # 5. 普通大棚每年种植两季作物，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外），第二季只能种植食用菌。[已被12包含]
     # Already included in 12
@@ -154,28 +150,28 @@ def main(reduction_factor, index):
     # Already included in 12
 
 
-    # 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
-    bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
-    for region in regions:
-        for y_begin in range(2024, 2029):
-            linear_model += lpSum(planting_decision[crop, region, year, season] for crop in bean_crops 
-                                  for year in range(y_begin, y_begin + 3) for season in seasons) >= 1
+    # # 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
+    # bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
+    # for region in regions:
+    #     for y_begin in range(2024, 2029):
+    #         linear_model += lpSum(planting_decision[crop, region, year, season] for crop in bean_crops 
+    #                               for year in range(y_begin, y_begin + 3) for season in seasons) >= 1
 
-    # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 8。
-    for year in years:
-        for crop in crops:
-            for season in seasons:
-                linear_model += lpSum(planting_decision[crop, region, year, season] for region in regions) <= 8
+    # # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 8。
+    # for year in years:
+    #     for crop in crops:
+    #         for season in seasons:
+    #             linear_model += lpSum(planting_decision[crop, region, year, season] for region in regions) <= 8
 
 
 
-    # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%。
-    for crop in crops:
-        for region in regions:
-            for year in years:
-                for season in seasons:
-                    linear_model += planting_area[crop, region, year, season] >= 0.3 * region_areas[region] * planting_decision[crop, region, year, season]
-                    linear_model += planting_area[crop, region, year, season] <= region_areas[region] * planting_decision[crop, region, year, season]
+    # # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%。
+    # for crop in crops:
+    #     for region in regions:
+    #         for year in years:
+    #             for season in seasons:
+    #                 linear_model += planting_area[crop, region, year, season] >= 0.3 * region_areas[region] * planting_decision[crop, region, year, season]
+    #                 linear_model += planting_area[crop, region, year, season] <= region_areas[region] * planting_decision[crop, region, year, season]
 
         
 
@@ -214,15 +210,15 @@ def main(reduction_factor, index):
                         linear_model += planting_decision[(crop, region, year, season)] == 0
                         
     
-    # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产
-    for crop in crops:
-        for region in regions:
-            for year in years:
-                # 同一年的第一季和第二季
-                linear_model += (planting_decision[crop, region, year, '第一季'] + planting_decision[crop, region, year, '第二季'] <= 1)
-                # 上一年第二季和下一年第一季
-                if year < 2030:
-                    linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
+    # # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产
+    # for crop in crops:
+    #     for region in regions:
+    #         for year in years:
+    #             # 同一年的第一季和第二季
+    #             linear_model += (planting_decision[crop, region, year, '第一季'] + planting_decision[crop, region, year, '第二季'] <= 1)
+    #             # 上一年第二季和下一年第一季
+    #             if year < 2030:
+    #                 linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
 
     # # test constraint: all crops's area <= 1
     # for crop in crops:

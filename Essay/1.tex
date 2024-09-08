@@ -232,7 +232,7 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
    \begin{equation}
-   \sum_{y=2023}^{2025} \sum_{c \in \text{豆类}} A_{c,r,y,s} \geq M_r
+   \sum_{y_0=2023}^{2028}  \sum_{y = y_0}^{y_0 + 3} \sum_{c \in \text{豆类}} y_{c,r,y,s} \geq 1
    \end{equation}
 
 9. 每种作物每季的种植地不能太分散。
@@ -257,7 +257,7 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 13. 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产。
     \begin{equation}
-    A_{c,r,y,s} \cdot A_{c,r,y+1,s} = 0
+    y_{c,r,y,s} + y_{c,r,y+1,s} <= 1
     \end{equation}
 
 % \begin{enumerate}
