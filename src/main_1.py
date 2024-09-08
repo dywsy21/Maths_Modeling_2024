@@ -84,8 +84,8 @@ def main(reduction_factor, index):
 
             z_list.append(z)
 
-            BigM1 = 2*1e6
-            BigM2 = 1e8
+            BigM1 = 1e6
+            BigM2 = 1e7
 
             # Add constraints to handle the binary logic (Big-M method)
             linear_model += get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季') + BigM1 * (1 - z)
