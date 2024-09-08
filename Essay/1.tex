@@ -195,31 +195,71 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 在综合研判所有提供的资料后，我们共找到了以下十三个约束条件：
 
-1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。
+1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。（仔细检查附件数据后，我们发现这里的单季其实就等价于第一季）
+   \begin{equation}
+    y_{c,r,y,\text{第二季}} = 0, \quad \forall r \in \{\text{平旱地、梯田和山坡地}\}  % finished
+   \end{equation}
 
-2. 水浇地每年可以单季种植水稻或两季种植蔬菜作物。
+2. 水浇地每年可以单季种植水稻或两季种植蔬菜作物。（仔细检查附件数据后，我们发现这里的单季其实就等价于第一季）
+   \begin{equation}
+    y_{\text{水稻},\text{水浇地},y,\text{第一季}} = 1 \quad \text{or} \quad  % finished
+    \sum_{c \in \text{蔬菜}} y_{c,r,y,\text{第一季}} = 2 
+   \end{equation}
 
 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
+   \begin{equation}
+   \sum_{c \in \text{蔬菜}} A_{c,r,y,1} \leq A_r, \quad \sum_{c \in \{\text{大白菜, 白萝卜, 红萝卜}\}} A_{c,r,y,2} \leq A_r
+   \end{equation}
 
 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。
+   \begin{equation}
+   A_{c,r,y,1} = 0, \quad \forall c \in \{\text{大白菜, 白萝卜, 红萝卜}\}
+   \end{equation}
 
 5. 普通大棚每年种植两季作物，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外），第二季只能种植食用菌。
+   \begin{equation}
+   \sum_{c \in \text{蔬菜}} A_{c,r,y,1} \leq A_r, \quad \sum_{c \in \text{食用菌}} A_{c,r,y,2} \leq A_r
+   \end{equation}
 
 6. 因食用菌类适应在较低且适宜的温度和湿度环境中生长，所以只能在秋冬季的普通大棚里种植。
+   \begin{equation}
+   A_{c,r,y,1} = 0, \quad \forall c \in \text{食用菌}
+   \end{equation}
 
 7. 智慧大棚每年都可种植两季蔬菜（大白菜、白萝卜和红萝卜除外）。
+   \begin{equation}
+   \sum_{c \in \text{蔬菜}} A_{c,r,y,s} \leq A_r
+   \end{equation}
 
 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
+   \begin{equation}
+   \sum_{y_0=2023}^{2028}  \sum_{y = y_0}^{y_0 + 3} \sum_{c \in \text{豆类}} y_{c,r,y,s} \geq 1
+   \end{equation}
 
 9. 每种作物每季的种植地不能太分散。
+   \begin{equation}
+   \sum_{r} y_{c,r,y,s} \leq 8
+   \end{equation}
 
 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。
+    \begin{equation}
+    A_{c,r,y,s} \geq 0.3 \times A_r
+    \end{equation}
 
 11. 一种地块上种植的总面积不能超出地块面积。
+    \begin{equation}
+    \sum_{c} A_{c,r,y,s} \leq A_r
+    \end{equation}
 
 12. 每种作物须满足相应的种植条件，如附件1\_乡村种植的农作物.csv中所示。
+    \begin{equation}
+    \text{根据附件1的种植条件}
+    \end{equation}
 
 13. 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产。
+    \begin{equation}
+    y_{c,r,y,s} + y_{c,r,y+1,s} <= 1
+    \end{equation}
 
 % \begin{enumerate}
 %     \item 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。
@@ -351,9 +391,12 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 此外，我们还应用了鲁棒优化算法（见函数$ get\_profit\_robust(crop, year) $），鲁棒优化的目标是找到一个解决方案，这个方案在最坏情况下仍然能够保持一定的性能，即使在参数发生变化时也不会导致性能显著下降。这种方法通过考虑不确定性的最坏情况来设计决策，从而提高解决方案的鲁棒性。最后我们以这个函数为基础实施了目标函数，应用了鲁棒优化。\\
 
 主要的变更点有:
+
 1. 在代码的各部分依据要求增加了与价格浮动和风险等相关的逻辑代码。
+
 2. 由于随机性，我们决定使用蒙特卡洛模拟来模拟风险的影响。蒙特卡洛模拟是一种通过随机抽样和统计实验来解决复杂问题的数值方法。该方法 的核心是多次随机生成输入参数的值，模拟可能的未来情境，并根据每次模拟的结果来 计算目标函数的值，从而评估其分布情况。具体到本题来说，蒙特卡洛模拟可以帮助我们处理预期销售量、亩产量、种植成本和 销售价格等不确定性，我们将在每次模拟中随机生成一个0-1之间的数，如果这个数小于风险概率，我们就认为这次模拟中这个作物产生了风险，产量为0，否则产量为正常产量。同时，我们将价格的浮动也考虑在内，即在每次模拟中，我们将价格乘以一个0.9-1.1之间的随机数，以模拟价格的波动。
-3. 由于蒙特卡洛模拟的随机性，我们决定进行10次模拟，以得到一个较为准确的结果。
+
+3. 采用情景规划，是广泛用于战略管理、政策制定、金融投资等领域\cite{ref6}的一种决策支持方法。它的核心思想是通过构建多个可能的未来情景，分析这些情景下的决策效果，从而帮助组织在面对未来不确定性时制定更稳健的决策\cite{ref7}由于蒙特卡洛模拟的随机性，我们创建了满足约束条件的10种情景，通过计算情景规划平均值得到2024年至2030年每年的最大净收益，以此得到一个较为准确的结果。
 
 \subsubsection{数据结论}
 \begin{table}[H]
@@ -507,6 +550,8 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
 \bibitem{ref3} 侯嫚丹,仝志民,周爱红,等.基于离散过程神经元网络的农作物产量预测模型及其应用[J].齐齐哈尔大学学报(自然科学版),2013,29(04):32-35.
 \bibitem{ref4} 陈春雷.谷物替代有所分化玉米供应预期趋缓[N].粮油市场报,2023-04-29(A03).DOI:10.28553/n.cnki.nlysc.2023.000796.
 \bibitem{ref5} 罗屹,史畅,黄汉权,等.中国大豆多元化布局和替代战略前景[J].中国农业文摘-农业工程,2023,35(06):65-71.DOI:10.19518/j.cnki.cn11-2531/s.2023.0101.
+\bibitem{ref6} 张传芳.基于情景规划的城市低效工业用地再开发潜力评价研究[D].中国矿业大学,2023.DOI:10.27623/d.cnki.gzkyu.2023.000268.
+\bibitem{ref7} 黄宇蝶.面向国土空间规划的土地利用多情景模拟研究[D].西南科技大学,2023.DOI:10.27415/d.cnki.gxngc.2023.000511.
 
 
 \bibitem{ref8} Ankita Begam, Mahadev Pramanick, Susanta Dutta, Bappa Paramanik, Gopal Dutta, Partha Sarathi Patra, Arindam Kundu, Asim Biswas, Inter-cropping patterns and nutrient management effects on maize growth, yield and quality,
