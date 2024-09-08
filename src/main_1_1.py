@@ -118,11 +118,11 @@ def main(reduction_factor, index):
             linear_model += lpSum(planting_decision[crop, region, year, season] for crop in bean_crops 
                                   for year in range(y_begin, y_begin + 3) for season in seasons) >= 1
 
-    # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 5。
+    # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 8。
     for year in years:
         for crop in crops:
             for season in seasons:
-                linear_model += lpSum(planting_decision[crop, region, year, season] for region in regions) <= 5
+                linear_model += lpSum(planting_decision[crop, region, year, season] for region in regions) <= 8
 
 
 
@@ -153,8 +153,8 @@ def main(reduction_factor, index):
             land_season = land_season.split(':')
             land = land_season[0]
             if len(land_season) > 1:
-                seasons = land_season[1].split(' ')
-                land_seasons_dict[land] = seasons
+                _seasons = land_season[1].split(' ')
+                land_seasons_dict[land] = _seasons
             else:
                 land_seasons_dict[land] = ['第一季']
         crop_to_condition[row['作物名称']] = land_seasons_dict
@@ -222,6 +222,14 @@ def main(reduction_factor, index):
     results = {year: {crop: {region: {season: planting_area[(crop, region, year, season)].varValue for season in seasons} for region in regions} for crop in crops} for year in years}
     df = pd.DataFrame(results)
     df.to_excel("result1_" + str(index) + ".xlsx")
+
+
+
+
+
+
+
+    
 
 if __name__ == "__main__":
     main(1, 1)
