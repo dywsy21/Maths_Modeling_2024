@@ -158,7 +158,26 @@ def main(reduction_factor):
     def get_seasonly_yield(crop, year, season):
         return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] for region in regions)
 
-    
+    # 互补的作物对
+    crop_sup = {
+        '玉米': ['大豆', '豇豆'],
+        '大豆': ['玉米'],
+        '小麦': ['玉米'],
+        '豇豆': ['玉米']
+    }
+    # 互斥的作物对
+    crop_dis = {
+        '玉米': ['小麦'],
+        '小麦': ['玉米'],
+    }
+    def sup_coef(crop, region, year, season):
+        if crop in crop_sup:
+            if sum(planting_decision[(_crop, region, year, season)] for _crop in crop_sup[crop]) >= 1:
+                return 1.2 # 互补作物假设增产20%
+            else:
+                return 1
+        else:
+            return 1
     # object function
     def get_profit(crop, year):
         if get_total_yield(crop, year) * risk(crop, year) <= get_expected_sales_list(crop, '第一季')[year-2024] + get_expected_sales_list(crop, '第二季')[year-2024]:
