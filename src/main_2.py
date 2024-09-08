@@ -114,5 +114,17 @@ def main(reduction_factor, index):
     def get_total_yield(crop, year):
         return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] for region in regions for season in seasons)
     
+    # object function
+    def get_profit(crop, year):
+        if get_total_yield(crop, year) <= get_expected_sales_list(crop, '第一季')[year-2024] + get_expected_sales_list(crop, '第二季')[year-2024]:
+            return lpSum(planting_area[(crop, region, year, season)]
+                         * (get_yield_per_acre_list(crop, region)[year-2024] * get_price_list(crop, season)[year-2024] - get_cost_list(crop, region)[year-2024])
+                        for region in regions for season in seasons
+                    )
+        else:
+            return lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] - get_expected_sales_list(crop, season)[year-2024] - get_cost_list(crop, region)[year-2024])
+                         * get_price_list(crop, season)[year-2024] * (1 - reduction_factor) 
+                         for region in regions for season in seasons) \
+                    + lpSum(get_expected_sales_list(crop, season)[year-2024] * get_price_list(crop, season)[year-2024] for season in seasons)
 
 
