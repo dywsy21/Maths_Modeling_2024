@@ -156,19 +156,14 @@ def main(reduction_factor, index):
             else:
                 land_seasons_dict[land] = ['第一季']
         crop_to_condition[row['作物名称']] = land_seasons_dict
-    # print(crop_to_condition)
+    print(crop_to_condition)
 
     for crop in crops:
         for region in regions:
             for year in years:
                 for season in seasons:
-                    if region_areas[region] in crop_to_condition[crop]:
-                        # print(season not in crop_to_condition[crop][region_to_type[region]], end=' ')
-                        # if crop_to_condition[crop][region_areas[region]] == ['单季']:
-                        #     # print('2！', end=' ')
-                        #     linear_model += planting_decision[(crop, region, year, '第二季')] == 0
-                        if season not in crop_to_condition[crop][region_areas[region]]:
-                            # print('1！', end=' ')
+                    if region_to_type[region] in crop_to_condition[crop]:
+                        if season not in crop_to_condition[crop][region_to_type[region]]:
                             linear_model += planting_decision[(crop, region, year, season)] == 0
                     else:
                         linear_model += planting_decision[(crop, region, year, season)] == 0
@@ -221,16 +216,16 @@ def main(reduction_factor, index):
     # Output results
     results = {year: {crop: {region: {season: planting_area[(crop, region, year, season)].varValue for season in seasons} for region in regions} for crop in crops} for year in years}
 
-    # 作物名称 地块编号 种植季节 种植数量 四列数据
-
-    result_list = []
+    # 作物名称 地块编号 种植季节 种植数量 年份 五列数据
+    output = []
     for year in years:
         for crop in crops:
             for region in regions:
                 for season in seasons:
-                    result_list.append([crop, region, season, results[year][crop][region][season]])
-    result_df = pd.DataFrame(result_list, columns=['作物名称', '地块编号', '种植季节', '种植数量'])
-    result_df.to_excel("result1_" + str(index) + ".xlsx")
+                    output.append([crop, region, season,year ,planting_area[(crop, region, year, season)].varValue])
+
+    output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
+    output_df.to_excel('result_1_' + str(index) + '.xlsx', index=False)
 
 
 if __name__ == "__main__":
