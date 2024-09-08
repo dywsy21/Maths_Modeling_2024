@@ -202,7 +202,7 @@ def main(reduction_factor, index):
     # )
     
     linear_model.writeLP("model.lp")
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=300))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=150))
 
 
     # for var in planting_decision.values():
@@ -231,13 +231,6 @@ def main(reduction_factor, index):
                     result_list.append([crop, region, season, results[year][crop][region][season]])
     result_df = pd.DataFrame(result_list, columns=['作物名称', '地块编号', '种植季节', '种植数量'])
     result_df.to_excel("result1_" + str(index) + ".xlsx")
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
