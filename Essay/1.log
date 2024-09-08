@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.7.20)  8 SEP 2024 15:53
-=======
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.10.14)  8 SEP 2024 15:27
->>>>>>> e428044d7e36b230d83a714ef58a0aa98272cad1
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.7.20)  8 SEP 2024 15:55
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1797,12 +1793,6 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removed on input line 329.
 
 
-LaTeX Warning: Citation `ref4' on page 14 undefined on input line 331.
-
-
-LaTeX Warning: Citation `ref5' on page 14 undefined on input line 331.
-
-
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\leavevmode@ifvmode' on input line 333.
 
@@ -2047,20 +2037,8 @@ L3 programming layer <2022/08/05>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `1.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `1.out':
-(rerunfilecheck)             Before: 37AA1C5D19F44B9794D40F51148CB972;5553
-(rerunfilecheck)             After:  D57CB629AEDEE6872EFCD34BB0E24CE6;5809.
+Package rerunfilecheck Info: File `1.out' has not changed.
+(rerunfilecheck)             Checksum: D57CB629AEDEE6872EFCD34BB0E24CE6;5809.
  ) 
 Here is how much of TeX's memory you used:
  24006 strings out of 476187
