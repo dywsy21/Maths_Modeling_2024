@@ -155,7 +155,7 @@ def main(reduction_factor):
                          for region in regions for season in seasons) \
                     + lpSum(get_expected_sales_list(crop, season)[year-2024] * get_price_list(crop, season)[year-2024] for season in seasons)
 
-    def get_profit_robust(crop, year):
+    def get_profit_robust(crop, year): # 鲁棒优化
         # 确定价格、产量和销售量的不确定性波动
         delta_price = 0.05  # 假设价格最大波动范围为 ±5%
         delta_yield = 0.10  # 假设产量最大波动范围为 ±10%
