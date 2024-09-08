@@ -260,6 +260,21 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 \subsubsection{数据结论}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{年份} & \textbf{情况一最大化净利润} & \textbf{情况二最大化净利润}  \\ \hline
+        2024 & 9196251.92 & 9160890.423  \\ \hline
+        2025 & 9062554.25 & 8218057.627  \\ \hline
+        2026 & 8992342 & 8480791.117  \\ \hline
+        2027 & 9132252.5 & 8349967.564  \\ \hline
+        2028 & 9097851.83 & 8068078.305  \\ \hline
+        2029 & 8282839.75 & 7215880.731  \\ \hline
+    \end{tabular}
+\end{table}
+由上表可知，情况二最大化收益会比情况一最大化收益更高。尽管降价出售，滞销部分仍然能产生部分收益。下将数据表可视化得到图3,4：
+
 \begin{figure}[H]
     \centering
     \begin{minipage}{0.49\textwidth}  % 调整宽度以适应页面
@@ -274,11 +289,12 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
         \subcaption{情况二最大化净利润}
         \label{fig:profit_case1_2}
     \end{minipage}
+    \caption{情况一二种植面积（分别）}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.9\textwidth]{3.png}
+    \includegraphics[width=.7\textwidth]{3.png}
     \caption{情况一二种植面积}
     \label{fig:profit_case1_1_2}
 \end{figure}
