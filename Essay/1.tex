@@ -1667,10 +1667,21 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
     
 \end{lstlisting}
 
-\section{附录 工具代码}
+\section{工具代码}
 \subsection{计算2023年利润数据的代码}
 \begin{lstlisting}[language=python]
+/src/utils/2023profit/2023profit.py
+import pandas as pd
+from pulp import *
 
+if __name__ == "__main__":
+    full_table = pd.read_csv('src\\data\\full_table.csv')
+    profit = 0
+    for i, row in full_table.iterrows():
+        profit += row['种植面积/亩'] * (row['亩产量/斤'] * row['平均价格/(元/斤)'] - row['种植成本/(元/亩)'])
+    print(profit)
+
+    # The result: 5926348.25元
 \end{lstlisting}
 
 \subsection{将excel转换成csv的代码}
