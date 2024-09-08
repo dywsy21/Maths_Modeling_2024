@@ -247,13 +247,10 @@ def main(reduction_factor):
             for year in years:
                 for season in seasons:
                     if region_areas[region] in crop_to_condition[crop]:
-                        # print(season not in crop_to_condition[crop][region_to_type[region]], end=' ')
-                        # if crop_to_condition[crop][region_areas[region]] == ['单季']:
-                        #     # print('2！', end=' ')
-                        #     linear_model += planting_decision[(crop, region, year, '第二季')] == 0
                         if season not in crop_to_condition[crop][region_areas[region]]:
-                            # print('1！', end=' ')
                             linear_model += planting_decision[(crop, region, year, season)] == 0
+                    else:
+                        linear_model += planting_decision[(crop, region, year, season)] == 0
                         
     
     # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产

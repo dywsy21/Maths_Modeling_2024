@@ -170,6 +170,8 @@ def main(reduction_factor, index):
                         if season not in crop_to_condition[crop][region_areas[region]]:
                             # print('1！', end=' ')
                             linear_model += planting_decision[(crop, region, year, season)] == 0
+                    else:
+                        linear_model += planting_decision[(crop, region, year, season)] == 0
                         
     
     # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产
@@ -200,7 +202,7 @@ def main(reduction_factor, index):
     # )
     
     linear_model.writeLP("model.lp")
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1000))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=150))
 
 
     # for var in planting_decision.values():
