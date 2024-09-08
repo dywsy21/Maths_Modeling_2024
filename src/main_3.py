@@ -108,14 +108,25 @@ def main(reduction_factor):
 
     # use data for 2024 and change rate to form a list of data for 2024-2030
 
-    # 可替代性作物
+    # 可替代性作物列表
     crop_inter = {
         '替代豆类': ['黄豆', '黑豆', '红豆', '绿豆', '芸豆'],
         '替代谷物': ['小麦', '玉米', '谷子', '高粱', '黍子', '荞麦']
     }
+    crop_inter_sales = {'替代豆类': 0, '替代谷物': 0}
+    for i, row in full_table.iterrows():
+        if row['作物名称'] in crop_inter['替代豆类']:
+            crop_inter_sales['替代豆类'] += row['预期销售量/斤']
+        elif row['作物名称'] in crop_inter['替代谷物']:
+            crop_inter_sales['替代谷物'] += row['预期销售量/斤']
+    
     def get_expected_sales_list(crop, season):# get_expected_sales(crop, season)[year-2024]
         ret_sales = []
         ret_sales.append(get_expected_sales(crop, season))
+        if crop in crop_inter['替代豆类']:
+            ret_sales[-1] += 0.05 * crop_inter_sales['替代豆类'] # 相互可替代的作物拥有一部分可公用预期销售量
+        elif crop in crop_inter['替代谷物']:
+            ret_sales[-1] += 0.05 * crop_inter_sales['替代谷物']
         for i in years[1:]:
             ret_sales.append(ret_sales[-1]*sales_rate[crop]())
         return ret_sales
