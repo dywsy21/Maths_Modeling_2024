@@ -2,6 +2,7 @@ import pandas as pd
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
 import numpy as np
 from main_1_1 import *
+import random
 
 def main(reduction_factor):
     full_table = pd.read_csv('src\\data\\full_table.csv')
@@ -25,6 +26,7 @@ def main(reduction_factor):
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
     region_to_type = dict(zip(full_table['种植地块'],full_table['地块类型']))
+    crop_to_type = dict(zip(file2['作物名称'],file2['作物类型']))
 
     # Create decision variables: the number of hectares to plant with [each crop] in [each region] at [each year] at [each season] and the decision to plant or not
     planting_area = LpVariable.dicts("planting_area", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], lowBound=0, cat='Continuous')
@@ -56,8 +58,6 @@ def main(reduction_factor):
                 return row['种植成本/(元/亩)']
         return 0
     
-    
-
 
     # change rate
     sales_rate = {}
@@ -83,6 +83,28 @@ def main(reduction_factor):
     yield_rate = lambda: np.random.uniform(0.9, 1.1)
 
     cost_rate = 1.05
+
+    # reduction of production considering risk
+    bean_dis_rate = 0.2724 # 粮食（豆类）
+    grain_dis_rate = 0.03
+    veg_dis_rate = 0.1
+    fungi_dis_rate = 0.2
+    risk_list = []
+    for j in range(4):
+        temp = []
+        for i in years:
+            temp.append(random.random())
+        risk_list.append(temp)
+    def risk(crop, year): # 蒙特卡洛算法实现
+        if crop_to_type[crop] == '粮食（豆类）':
+            return 0 if risk_list[0][year-2024] < bean_dis_rate else 1
+        elif crop_to_type[crop] == '粮食':
+            return 0 if risk_list[1][year-2024] < grain_dis_rate else 1
+        elif crop_to_type[crop] == '蔬菜' or crop_to_type[crop] == '蔬菜（豆类）':
+            return 0 if risk_list[2][year-2024] < veg_dis_rate else 1
+        else:
+            return 0 if risk_list[3][year-2024] < fungi_dis_rate else 1
+
 
     # use data for 2024 and change rate to form a list of data for 2024-2030
     def get_expected_sales_list(crop, season):# get_expected_sales(crop, season)[year-2024]
@@ -114,7 +136,11 @@ def main(reduction_factor):
         return ret_cost
     
     def get_total_yield(crop, year):
-        return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] for region in regions for season in seasons)
+        return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] * risk(crop, year, season) for region in regions for season in seasons)
+    
+    def get_seasonly_yield(crop, year, season):
+        return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] for region in regions)
+
     
     # object function
     def get_profit(crop, year):
