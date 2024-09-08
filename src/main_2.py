@@ -7,7 +7,8 @@ import random
 def main(reduction_factor):
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
-
+    file1 = pd.read_csv('附件\\附件(csv)\\附件1_乡村的现有耕地.csv')
+    
     # 将full_table中的单季改为第一季
     full_table['种植季次'] = full_table['种植季次'].apply(lambda x: '第一季' if x == '单季' else x)
 
@@ -16,13 +17,8 @@ def main(reduction_factor):
     regions = full_table['种植地块'].unique()
     crops = full_table['作物名称'].unique()
 
-    region_areas = {}
-    for index, row in full_table.iterrows():
-        if row['种植地块'] not in region_areas:
-            region_areas[row['种植地块']] = row['种植面积/亩']
-        else:
-            region_areas[row['种植地块']] += row['种植面积/亩']
-            
+    region_areas = dict(zip(file1['地块名称'], file1['地块面积/亩']))
+    
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
     region_to_type = dict(zip(full_table['种植地块'],full_table['地块类型']))
@@ -89,21 +85,22 @@ def main(reduction_factor):
     grain_dis_rate = 0.03
     veg_dis_rate = 0.1
     fungi_dis_rate = 0.2
-    risk_list = []
-    for j in range(4):
-        temp = []
-        for i in years:
-            temp.append(random.random())
-        risk_list.append(temp)
+    # risk_list = []
+    # for j in range(4):
+    #     temp = []
+    #     for i in years:
+    #         temp.append(random.random())
+    #     risk_list.append(temp)
+
     def risk(crop, year): # 蒙特卡洛算法实现
         if crop_to_type[crop] == '粮食（豆类）':
-            return 0 if risk_list[0][year-2024] < bean_dis_rate else 1
+            return 0 if random.random() < bean_dis_rate else 1
         elif crop_to_type[crop] == '粮食':
-            return 0 if risk_list[1][year-2024] < grain_dis_rate else 1
+            return 0 if random.random() < grain_dis_rate else 1
         elif crop_to_type[crop] == '蔬菜' or crop_to_type[crop] == '蔬菜（豆类）':
-            return 0 if risk_list[2][year-2024] < veg_dis_rate else 1
+            return 0 if random.random() < veg_dis_rate else 1
         else:
-            return 0 if risk_list[3][year-2024] < fungi_dis_rate else 1
+            return 0 if random.random() < fungi_dis_rate else 1
 
 
     # use data for 2024 and change rate to form a list of data for 2024-2030
@@ -144,9 +141,10 @@ def main(reduction_factor):
     
     # object function
     def get_profit(crop, year):
-        if get_total_yield(crop, year) * risk(crop, year) <= get_expected_sales_list(crop, '第一季')[year-2024] + get_expected_sales_list(crop, '第二季')[year-2024]:
+        _risk = risk(crop, year)
+        if get_total_yield(crop, year) * _risk <= get_expected_sales_list(crop, '第一季')[year-2024] + get_expected_sales_list(crop, '第二季')[year-2024]:
             return lpSum(planting_area[(crop, region, year, season)]
-                         * (get_yield_per_acre_list(crop, region)[year-2024] * get_price_list(crop, season)[year-2024] * risk(crop, year) - get_cost_list(crop, region)[year-2024])
+                         * (get_yield_per_acre_list(crop, region)[year-2024] * get_price_list(crop, season)[year-2024] * _risk - get_cost_list(crop, region)[year-2024])
                         for region in regions for season in seasons
                     )
         else:
@@ -167,14 +165,16 @@ def main(reduction_factor):
             for region in regions for season in seasons
         )
 
+        _risk = risk(crop, year)
+
         # 如果总产量小于或等于预期销售量（考虑销售量波动）
-        if total_yield_uncertain * risk(crop, year) <= (get_expected_sales_list(crop, '第一季')[year - 2024] * (1 - delta_sales) +
+        if total_yield_uncertain * _risk <= (get_expected_sales_list(crop, '第一季')[year - 2024] * (1 - delta_sales) +
                                                         get_expected_sales_list(crop, '第二季')[year - 2024] * (1 - delta_sales)):
             # 正常利润计算
             return lpSum(
                 planting_area[(crop, region, year, season)] *
                 ((1 - delta_yield) * get_yield_per_acre_list(crop, region)[year - 2024] * 
-                (1 - delta_price) * get_price_list(crop, season)[year - 2024] * risk(crop, year) -
+                (1 - delta_price) * get_price_list(crop, season)[year - 2024] * _risk -
                 get_cost_list(crop, region)[year - 2024])
                 for region in regions for season in seasons
             )
@@ -298,7 +298,7 @@ def main(reduction_factor):
                     linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
 
     linear_model.writeLP("model2.lp") # ***edited
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=150))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=100))
 
 
     # for var in planting_decision.values():
@@ -306,16 +306,15 @@ def main(reduction_factor):
     #         print(f"Variable {var.name} has a non-binary value: {var.varValue}")
 
 # Calculate target function values for each year
+    yearly_obj_values = []
     for k in years:
         yearly_obj_value = lpSum(
             (get_price_list(crop, season)[year-2024] * get_yield_per_acre_list(crop, region)[year-2024] - get_cost_list(crop, region)[year-2024]) * planting_area[crop, region, k, season].varValue
             for crop in crops for region in regions for season in seasons
             if planting_area[crop, region, k, season].varValue > 0  # Only consider variables with planting area greater than 0
         )
+        yearly_obj_values.append(yearly_obj_value)
         print(f"Year {k} objective function value: {yearly_obj_value}")
-
-    # Output results
-    results = {year: {crop: {region: {season: planting_area[(crop, region, year, season)].varValue for season in seasons} for region in regions} for crop in crops} for year in years}
 
     # 作物名称 地块编号 种植季节 种植数量 年份 五列数据
     output = []
@@ -325,9 +324,49 @@ def main(reduction_factor):
                 for season in seasons:
                     output.append([crop, region, season,year ,planting_area[(crop, region, year, season)].varValue])
 
-    output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
-    output_df.to_excel('result_2.xlsx', index=False)
 
+    # output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
+    # output_df.to_excel('result_2.xlsx', index=False)
+
+    return output, yearly_obj_values
+
+def merge(output1: list, output2: list):
+    for i in range(len(output1)):
+        output1[i][4] += output2[i][4]
+    return output1
+
+def merge_entire(output_list: list):
+    output = output_list[0]
+    for i in range(1, len(output_list)):
+        output = merge(output, output_list[i])
+    return output
+
+def to_average(output: list, n: int):
+    for i in range(len(output)):
+        output[i][4] /= n
+    return output
 
 if __name__ == "__main__":
-    main(0.5)
+    output_list = []
+    yearly_obj_values_list = []
+    times = 10
+    for i in range(times):
+        output, yearly_obj_values = main(0.5)
+        output_list.append(output)
+        yearly_obj_values_list.append(yearly_obj_values)
+
+    for i in range(1, times):
+        yearly_obj_values_list[0] = [yearly_obj_values_list[0][j] + yearly_obj_values_list[i][j] for j in range(len(yearly_obj_values_list[0]))]
+    
+    for i in range(len(yearly_obj_values_list[0])):
+        yearly_obj_values_list[0][i] /= times
+        print(f"Average Year {i+2024} objective function value: {yearly_obj_values_list[0][i]}")
+
+    output = merge_entire(output_list)
+    output = to_average(output, times)
+
+    output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
+    output_df.to_excel('result_2_average.xlsx', index=False)
+
+    output_df_first = pd.DataFrame(output_list[0], columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
+    output_df_first.to_excel('result_2.xlsx', index=False)

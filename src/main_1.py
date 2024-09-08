@@ -4,6 +4,7 @@ from pulp import *
 def main(reduction_factor, index):
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
+    file1 = pd.read_csv('附件\\附件(csv)\\附件1_乡村的现有耕地.csv')
 
     # 将full_table中的单季改为第一季
     full_table['种植季次'] = full_table['种植季次'].apply(lambda x: '第一季' if x == '单季' else x)
@@ -13,12 +14,8 @@ def main(reduction_factor, index):
     regions = full_table['种植地块'].unique()
     crops = full_table['作物名称'].unique()
 
-    region_areas = {}
-    for i, row in full_table.iterrows():
-        if row['种植地块'] not in region_areas:
-            region_areas[row['种植地块']] = row['种植面积/亩']
-        else:
-            region_areas[row['种植地块']] += row['种植面积/亩']
+    region_areas = dict(zip(file1['地块名称'], file1['地块面积/亩']))
+
             
     linear_model = LpProblem(name="profit_maximization", sense=LpMaximize)
     
@@ -56,16 +53,17 @@ def main(reduction_factor, index):
         return 0
     
     def get_total_yield(crop, year):
-        return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) for region in regions for season in seasons)
-    
+        return sum(planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) for region in regions for season in seasons)
     
     def get_profit(crop, year):
         if get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季'):
+            print(0,end='')
             return lpSum(planting_area[(crop, region, year, season)]
                          * (get_yield_per_acre(crop, region) * get_price(crop, season) - get_cost(crop, region))
                         for region in regions for season in seasons
                     )
         else:
+            print(1,end='')
             return lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) - get_expected_sales(crop, season) - get_cost(crop, region))
                          * get_price(crop, season) * (1 - reduction_factor) 
                          for region in regions for season in seasons) \
