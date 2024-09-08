@@ -220,8 +220,17 @@ def main(reduction_factor, index):
 
     # Output results
     results = {year: {crop: {region: {season: planting_area[(crop, region, year, season)].varValue for season in seasons} for region in regions} for crop in crops} for year in years}
-    df = pd.DataFrame(results)
-    df.to_excel("result1_" + str(index) + ".xlsx")
+
+    # 作物名称 地块编号 种植季节 种植数量 四列数据
+
+    result_list = []
+    for year in years:
+        for crop in crops:
+            for region in regions:
+                for season in seasons:
+                    result_list.append([crop, region, season, results[year][crop][region][season]])
+    result_df = pd.DataFrame(result_list, columns=['作物名称', '地块编号', '种植季节', '种植数量'])
+    result_df.to_excel("result_" + str(index) + ".xlsx")
 
 
 
@@ -229,7 +238,7 @@ def main(reduction_factor, index):
 
 
 
-    
+
 
 if __name__ == "__main__":
     main(1, 1)
