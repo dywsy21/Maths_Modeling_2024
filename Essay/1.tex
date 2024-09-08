@@ -73,7 +73,9 @@
 
 总而言之，我们需要构建一个以最大化总收益为目标的目标函数，同时建立相应的涵盖种植类型、重茬限制、豆类种植要求等多个方面的约束条件。通过使用线性规划求解算法来求解该模型，并验证结果是否符合所有的约束条件。最终，通过调整模型参数和约束条件，可以进一步优化方案，以确保其在实际操作中具备可行性和最大化经济效益的潜力。通过这样的分析方式，可以得出符合2024-2030年经济效益最大化目标的最优种植方案。
 
-
+\subsection{问题二的分析}
+问题2的设定大体上延续了问题1的设定，而进一步提出了农作物的预期销售量、种植成本、亩产量、销售价格的变化趋势。因此我们可以直接沿用问题1的模型，在其中增加或更改代码以适用于问题2的目标。问题2的目标是在考虑未来销售量、价格、气候变化和种植成本等不确定因素的影响下，优化种植策略以确保收益的稳定性和风险的最小化。因此，我们需要在问题1的基础上，引入一些新的变量和约束条件，以适应问题2的要求。其中，题干中提到一些量的年平均变化率在一个区间内波动，对于这一随机波动的刻画是问题2的基础。\\\\
+问题二中核心问题是将各种农作物的种植风险量化为可编程可计算的代码。在实际农业生产中，自然灾害等风险因素会因地区、作物种类和种植条件的不同而有很大差异。但是我们可以通过查阅文献和综合研判各种风险等方式粗略给出了各种农作物的种植风险，并给出一个固定的数值作为农作物发生减产的概率。\\\\
 
 \section{模型假设}
 \subsection{问题一的假设}
@@ -570,9 +572,14 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
 \bibitem{ref5} 罗屹,史畅,黄汉权,等.中国大豆多元化布局和替代战略前景[J].中国农业文摘-农业工程,2023,35(06):65-71.DOI:10.19518/j.cnki.cn11-2531/s.2023.0101.
 \bibitem{ref6} 张传芳.基于情景规划的城市低效工业用地再开发潜力评价研究[D].中国矿业大学,2023.DOI:10.27623/d.cnki.gzkyu.2023.000268.
 \bibitem{ref7} 黄宇蝶.面向国土空间规划的土地利用多情景模拟研究[D].西南科技大学,2023.DOI:10.27415/d.cnki.gxngc.2023.000511.
+<<<<<<< HEAD
+\bibitem{ref8} Ankita Begam, Mahadev Pramanick, Susanta Dutta, Bappa Paramanik, Gopal Dutta, Partha Sarathi Patra, Arindam Kundu, Asim Biswas, Inter-cropping patterns and nutrient management effects on maize growth, yield and quality,
+Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
+=======
 
 
 \bibitem{ref8} Zhang, X., Kong, Y., Lv, Y., Yao, F., Cao, Y., Shao, X., Geng, Y., Wang, L., \& Wang, Y. (2024). Increased topsoil depth required to support increased grain yield production in high density maize. Field Crops Research.
+>>>>>>> cd559b51eaa573cc41e4dc7f1e2e28a90d5c39af
 
 
 
