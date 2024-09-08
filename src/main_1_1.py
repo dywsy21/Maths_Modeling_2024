@@ -1,5 +1,5 @@
 import pandas as pd
-from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
+from pulp import *
 
 def main(reduction_factor, index):
     full_table = pd.read_csv('src\\data\\full_table.csv')
@@ -202,7 +202,7 @@ def main(reduction_factor, index):
     # )
     
     linear_model.writeLP("model.lp")
-    linear_model.solve()
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=300))
 
 
     # for var in planting_decision.values():
