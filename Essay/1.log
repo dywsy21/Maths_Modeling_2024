@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.10.14)  8 SEP 2024 08:35
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023) (preloaded format=xelatex 2023.10.14)  8 SEP 2024 09:15
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1363,41 +1363,92 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\leavevmode@ifvmode' on input line 208.
+(hyperref)                removing `\leavevmode@ifvmode' on input line 206.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                \kern 2.00876pt
-(hyperref)                removed on input line 208.
+(hyperref)                removed on input line 206.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\leavevmode@ifvmode' on input line 208.
+(hyperref)                removing `\leavevmode@ifvmode' on input line 206.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                \kern 2.00876pt
-(hyperref)                removed on input line 208.
+(hyperref)                removed on input line 206.
 
 
-Underfull \hbox (badness 5245) in paragraph at lines 212--213
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 206.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern 2.00876pt
+(hyperref)                removed on input line 206.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 206.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern 2.00876pt
+(hyperref)                removed on input line 206.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 207--215
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 216--225
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 226--233
+
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 235.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern 2.00876pt
+(hyperref)                removed on input line 235.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 235.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern 2.00876pt
+(hyperref)                removed on input line 235.
+
+
+Underfull \hbox (badness 5245) in paragraph at lines 239--240
 []\TU/SimSun(0)/m/n/12.05 孙 飞\TU/TimesNewRoman(0)/m/n/12.05 . \TU/SimSun(0)/m/n/12.05 农 作 物 生 产 专 业 化 对 农 户 生 计 的 影 响 研 究 \TU/TimesNewRoman(0)/m/n/12.05 [D]. \TU/SimSun(0)/m/n/12.05 中 南 财 经 政 法 大
  []
 
-[9] (./1.aux)
+[9] [10] (./1.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package rerunfilecheck Info: File `1.out' has not changed.
-(rerunfilecheck)             Checksum: 0CC6D33876C1DCAA20E71C5313FD0DF1;3335.
+(rerunfilecheck)             Checksum: DC490E3F8EAC63EFCABB17F3A1B07DA2;3555.
  ) 
 Here is how much of TeX's memory you used:
- 23426 strings out of 478634
- 507092 string characters out of 5847194
- 1873012 words of memory out of 5000000
- 43134 multiletter control sequences out of 15000+600000
+ 23477 strings out of 478634
+ 510384 string characters out of 5847194
+ 1872012 words of memory out of 5000000
+ 43185 multiletter control sequences out of 15000+600000
  529848 words of font info for 169 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  104i,16n,111p,464b,501s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on 1.xdv (11 pages, 140764 bytes).
+Output written on 1.xdv (12 pages, 153808 bytes).
