@@ -260,6 +260,30 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 \subsubsection{数据结论}
 
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.49\textwidth}  % 调整宽度以适应页面
+        \centering
+        \includegraphics[width=0.9\linewidth]{1.png}  % 确保图像宽度适合minipage
+        \subcaption{情况一最大化净利润}
+        \label{fig:profit_case1_1}
+    \end{minipage}\hfill  % 添加 \hfill 来推动下一个minipage到行的右侧
+    \begin{minipage}{0.49\textwidth}  % 调整宽度以适应页面
+        \centering
+        \includegraphics[width=0.9\linewidth]{2.png}  % 确保图像宽度适合minipage
+        \subcaption{情况二最大化净利润}
+        \label{fig:profit_case1_2}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.9\textwidth]{3.png}
+    \caption{情况一二种植面积}
+    \label{fig:profit_case1_1_2}
+\end{figure}
+
+
 \subsubsection{建模过程中遇到的问题和解决方式}
 一开始，我们遇到了输出的.xlsx文件中所有作物的种植面积全部为0的问题，我们分析出可能原因有两点：\\
 a) CBC 求解器告诉我们，找到可行解‘， 但是该解为负，即在利润最大化目标
