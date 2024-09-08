@@ -273,5 +273,5 @@ def main(reduction_factor, index):
 
 
 if __name__ == "__main__":
-    # main(1, 1)
+    main(1, 1)
     main(0.5, 2)
