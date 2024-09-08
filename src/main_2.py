@@ -144,9 +144,9 @@ def main(reduction_factor):
     
     # object function
     def get_profit(crop, year):
-        if get_total_yield(crop, year) <= get_expected_sales_list(crop, '第一季')[year-2024] + get_expected_sales_list(crop, '第二季')[year-2024]:
+        if get_total_yield(crop, year) * risk(crop, year) <= get_expected_sales_list(crop, '第一季')[year-2024] + get_expected_sales_list(crop, '第二季')[year-2024]:
             return lpSum(planting_area[(crop, region, year, season)]
-                         * (get_yield_per_acre_list(crop, region)[year-2024] * get_price_list(crop, season)[year-2024] - get_cost_list(crop, region)[year-2024])
+                         * (get_yield_per_acre_list(crop, region)[year-2024] * get_price_list(crop, season)[year-2024] * risk(crop, year) - get_cost_list(crop, region)[year-2024])
                         for region in regions for season in seasons
                     )
         else:
@@ -247,13 +247,10 @@ def main(reduction_factor):
             for year in years:
                 for season in seasons:
                     if region_areas[region] in crop_to_condition[crop]:
-                        # print(season not in crop_to_condition[crop][region_to_type[region]], end=' ')
-                        # if crop_to_condition[crop][region_areas[region]] == ['单季']:
-                        #     # print('2！', end=' ')
-                        #     linear_model += planting_decision[(crop, region, year, '第二季')] == 0
                         if season not in crop_to_condition[crop][region_areas[region]]:
-                            # print('1！', end=' ')
                             linear_model += planting_decision[(crop, region, year, season)] == 0
+                    else:
+                        linear_model += planting_decision[(crop, region, year, season)] == 0
                         
     
     # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产
