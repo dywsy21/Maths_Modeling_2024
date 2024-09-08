@@ -238,7 +238,7 @@ def main(reduction_factor, index):
     # )
     
     linear_model.writeLP("model.lp")
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1500))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=300))
 
 
     # for var in planting_decision.values():
