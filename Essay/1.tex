@@ -195,14 +195,15 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 在综合研判所有提供的资料后，我们共找到了以下十三个约束条件：
 
-1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。
+1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。（仔细检查附件数据后，我们发现这里的单季其实就等价于第一季）
    \begin{equation}
-   \sum_{c \in \text{粮食类}} A_{c,r,y,s} \leq A_r
+    y_{c,r,y,\text{第二季}} = 0, \quad \forall r \in \{\text{平旱地、梯田和山坡地}\}  % finished
    \end{equation}
 
-2. 水浇地每年可以单季种植水稻或两季种植蔬菜作物。
+2. 水浇地每年可以单季种植水稻或两季种植蔬菜作物。（仔细检查附件数据后，我们发现这里的单季其实就等价于第一季）
    \begin{equation}
-   \sum_{c \in \text{水稻}} A_{c,r,y,1} + \sum_{c \in \text{蔬菜}} A_{c,r,y,2} \leq A_r
+    y_{\text{水稻},\text{水浇地},y,\text{第一季}} = 1 \quad \text{or} \quad  % finished
+    \sum_{c \in \text{蔬菜}} y_{c,r,y,\text{第一季}} = 2 
    \end{equation}
 
 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
