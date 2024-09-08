@@ -63,18 +63,20 @@ def main(reduction_factor):
     sales_rate = {}
     for index, row in file2.iterrows():
         if row['作物名称'] == '小麦' or row['作物名称'] == '玉米':
-            sales_rate['作物名称'] = lambda: np.random.uniform(1.05, 1.10)
+            sales_rate[row['作物名称']] = lambda: np.random.uniform(1.05, 1.10)
         else:
-            sales_rate['作物名称'] = lambda: np.random.uniform(0.95, 1.05) #! TODO: potential misunderstanding
+            sales_rate[row['作物名称']] = lambda: np.random.uniform(0.95, 1.05) #! TODO: potential misunderstanding
+
+    
 
     price_rate = {}
     for index, row in file2.iterrows():
         if row['作物名称'] == '羊肚菌':
-            price_rate[row['作物名称']] = 0.95
+            price_rate[row['作物名称']] = lambda: 0.95
         elif row['作物类型'] == '粮食' or row['作物类型'] == '粮食（豆类）':
-            price_rate[row['作物名称']] = 1.00
+            price_rate[row['作物名称']] = lambda: 1.00
         elif row['作物类型'] == '蔬菜' or row['作物类型'] == '蔬菜（豆类）':
-            price_rate[row['作物名称']] = 1.05
+            price_rate[row['作物名称']] = lambda: 1.05
         else:# 食用菌 except 羊肚菌
             price_rate[row['作物名称']] = lambda: np.random.uniform(0.95, 0.99)
     
@@ -87,7 +89,7 @@ def main(reduction_factor):
         ret_sales = []
         ret_sales.append(get_expected_sales(crop, season))
         for i in years[1:]:
-            ret_sales.append(ret_sales[-1]*sales_rate)
+            ret_sales.append(ret_sales[-1]*sales_rate[crop]())
         return ret_sales
     
     def get_yield_per_acre_list(crop, region):
@@ -101,7 +103,7 @@ def main(reduction_factor):
         ret_price = []
         ret_price.append(get_price(crop, season))
         for i in years[1:]:
-            ret_price.append(ret_price[-1]*price_rate)
+            ret_price.append(ret_price[-1]*price_rate[crop]())
         return ret_price
     
     def get_cost_list(crop, region):
