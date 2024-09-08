@@ -96,10 +96,12 @@ def main(reduction_factor, index):
         total_yield = get_total_yield(crop, year)
         expected_sales = get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季')
         if total_yield <= expected_sales:
+            print(0, end='')
             return lpSum(planting_area[(crop, region, year, season)]
                          * (get_yield_per_acre(crop, region) * get_price(crop, season) - get_cost(crop, region))
                          for region in regions for season in seasons)
         else:
+            print(1, end='')
             return (lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) * get_price(crop, season)
                           - get_cost(crop, region) for region in regions for season in seasons)
                     - reduction_factor * (total_yield - expected_sales))
@@ -134,5 +136,5 @@ def main(reduction_factor, index):
         print(f"Year {k} objective function value: {yearly_obj_value}")
 
 if __name__ == "__main__":
-    main(1, 1)
+    # main(1, 1)
     main(0.5, 2)
