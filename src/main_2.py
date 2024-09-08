@@ -238,4 +238,37 @@ def main(reduction_factor, index):
                 if year < 2030:
                     linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
 
+    linear_model.writeLP("model2.lp") # ***edited
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=150))
 
+
+    # for var in planting_decision.values():
+    #     if var.varValue not in [0, 1]:
+    #         print(f"Variable {var.name} has a non-binary value: {var.varValue}")
+
+# Calculate target function values for each year
+    for k in years:
+        yearly_obj_value = lpSum(
+            (get_price_list(crop, season)[year-2024] * get_yield_per_acre_list(crop, region)[year-2024] - get_cost_list(crop, region)[year-2024]) * planting_area[crop, region, k, season].varValue
+            for crop in crops for region in regions for season in seasons
+            if planting_area[crop, region, k, season].varValue > 0  # Only consider variables with planting area greater than 0
+        )
+        print(f"Year {k} objective function value: {yearly_obj_value}")
+
+    # Output results
+    results = {year: {crop: {region: {season: planting_area[(crop, region, year, season)].varValue for season in seasons} for region in regions} for crop in crops} for year in years}
+
+    # 作物名称 地块编号 种植季节 种植数量 四列数据
+
+    result_list = []
+    for year in years:
+        for crop in crops:
+            for region in regions:
+                for season in seasons:
+                    result_list.append([crop, region, season, results[year][crop][region][season]])
+    result_df = pd.DataFrame(result_list, columns=['作物名称', '地块编号', '种植季节', '种植数量'])
+    result_df.to_excel("result2.xlsx")
+
+
+if __name__ == "__main__":
+    main(0.5, 2)
