@@ -749,7 +749,6 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
                         linear_model += planting_area[crop, region, year, season] >= 0.3 * region_areas[region] * planting_decision[crop, region, year, season]
                         linear_model += planting_area[crop, region, year, season] <= region_areas[region] * planting_decision[crop, region, year, season]
     
-            
     
         # 11. 不能超出地块面积
         for region in regions:
@@ -796,30 +795,8 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
                     if year < 2030:
                         linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
     
-        # # test constraint: all crops's area <= 1
-        # for crop in crops:
-        #     for region in regions:
-        #         for year in years:
-        #             for season in seasons:
-        #                 linear_model += planting_area[crop, region, year, season] <= 1
-    
-    
-    
-    
-    
-        # # Define the target function: Maximize profit excluding dormant sales
-        # linear_model += lpSum(
-        #     get_price(crop, season) * get_yield_per_acre(crop, region) * planting_area[crop, region, year, season] - planting_area[crop, region, year, season] * get_cost(crop, region)
-        #     for crop in crops for region in regions for year in years for season in seasons
-        # )
-        
         linear_model.writeLP("model.lp")
         linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1500))
-    
-    
-        # for var in planting_decision.values():
-        #     if var.varValue not in [0, 1]:
-        #         print(f"Variable {var.name} has a non-binary value: {var.varValue}")
     
     # Calculate target function values for each year
         for k in years:
@@ -844,10 +821,7 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
         output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
         output_df.to_excel('result_1_' + str(index) + '.xlsx', index=False)
     
-        for z in z_list:
-            print(z.varValue, end='')
-    
-    
+
     if __name__ == "__main__":
         # main(1, 1)
         main(0.5, 2)
@@ -943,12 +917,6 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
         grain_dis_rate = 0.03
         veg_dis_rate = 0.1
         fungi_dis_rate = 0.2
-        # risk_list = []
-        # for j in range(4):
-        #     temp = []
-        #     for i in years:
-        #         temp.append(random.random())
-        #     risk_list.append(temp)
     
         def risk(crop, year): # 蒙特卡洛算法实现
             if crop_to_type[crop] == '粮食（豆类）':
@@ -1155,8 +1123,6 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
                         linear_model += planting_area[crop, region, year, season] >= 0.3 * region_areas[region] * planting_decision[crop, region, year, season]
                         linear_model += planting_area[crop, region, year, season] <= region_areas[region] * planting_decision[crop, region, year, season]
     
-            
-    
         # 11. 不能超出地块面积
         for region in regions:
             for year in years:
@@ -1204,11 +1170,6 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
     
         linear_model.writeLP("model2.lp") # ***edited
         linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=200))
-    
-    
-        # for var in planting_decision.values():
-        #     if var.varValue not in [0, 1]:
-        #         print(f"Variable {var.name} has a non-binary value: {var.varValue}")
     
     # Calculate target function values for each year
         yearly_obj_values = []
@@ -1314,7 +1275,7 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
         planting_area = LpVariable.dicts("planting_area", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], lowBound=0, cat='Continuous')
         planting_decision = LpVariable.dicts("planting_decision", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], cat='Binary')
     
-        # functions in main_1_1 (to get data for 2024)
+        # functions in main_1 (to get data for 2024)
         def get_expected_sales(crop, season):
             ret = 0
             for i, row in full_table.iterrows():
@@ -1350,7 +1311,6 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
                 sales_rate[row['作物名称']] = lambda: np.random.uniform(0.95, 1.05) #! TODO: potential misunderstanding
     
         
-    
         price_rate = {}
         for index, row in file2.iterrows():
             if row['作物名称'] == '羊肚菌':
@@ -1371,12 +1331,6 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
         grain_dis_rate = 0.03
         veg_dis_rate = 0.1
         fungi_dis_rate = 0.2
-        # risk_list = []
-        # for j in range(4):
-        #     temp = []
-        #     for i in years:
-        #         temp.append(random.random())
-        #     risk_list.append(temp)
     
         def risk(crop, year): # 蒙特卡洛算法实现
             if crop_to_type[crop] == '粮食（豆类）':
@@ -1390,7 +1344,6 @@ Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
     
     
         # use data for 2024 and change rate to form a list of data for 2024-2030
-    
         # 可替代性作物列表
         crop_inter = {
             '替代豆类': ['黄豆', '黑豆', '红豆', '绿豆', '芸豆'],
