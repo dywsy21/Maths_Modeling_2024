@@ -3,7 +3,7 @@ from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
 import numpy as np
 from main_1_1 import *
 
-def main(reduction_factor, index):
+def main(reduction_factor):
     full_table = pd.read_csv('src\\data\\full_table.csv')
     file2 = pd.read_csv('附件\\附件(csv)\\附件1_乡村种植的农作物.csv')
 
@@ -85,28 +85,28 @@ def main(reduction_factor, index):
     # use data for 2024 and change rate to form a list of data for 2024-2030
     def get_expected_sales_list(crop, season):# get_expected_sales(crop, season)[year-2024]
         ret_sales = []
-        ret_sales[0] = get_expected_sales(crop, season)
+        ret_sales.append(get_expected_sales(crop, season))
         for i in years[1:]:
             ret_sales.append(ret_sales[-1]*sales_rate)
         return ret_sales
     
     def get_yield_per_acre_list(crop, region):
         ret_yield = []
-        ret_yield[0] = get_yield_per_acre(crop, region)
+        ret_yield.append(get_yield_per_acre(crop, region))
         for i in years[1:]:
-            ret_yield.append(ret_yield[-1]*yield_rate)
+            ret_yield.append(ret_yield[-1]*yield_rate())
         return ret_yield
     
     def get_price_list(crop, season):
         ret_price = []
-        ret_price[0] = get_price(crop, season)
+        ret_price.append(get_price(crop, season))
         for i in years[1:]:
             ret_price.append(ret_price[-1]*price_rate)
         return ret_price
     
     def get_cost_list(crop, region):
         ret_cost = []
-        ret_cost[0] = get_cost(crop, region)
+        ret_cost.append(get_cost(crop, region))
         for i in years[1:]:
             ret_cost.append(ret_cost[-1]*cost_rate)
         return ret_cost
@@ -271,4 +271,4 @@ def main(reduction_factor, index):
 
 
 if __name__ == "__main__":
-    main(0.5, 2)
+    main(0.5)
