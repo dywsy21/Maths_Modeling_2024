@@ -110,7 +110,7 @@
 \subsection{地块与面积分布}
 不同地块的面积分布可提供对各地块可用种植面积的直观了解，有助于确定后续种植策略中的面积分配，具体如下图所示：
 % \includegraphics[width=0.5\textwidth]{Figure_1.png}
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=.9\textwidth]{Figure_1.png}
     \caption{地块与面积分布图}
@@ -121,7 +121,14 @@
 总体来看，地块面积的分布反映了自然条件对农业生产的制约和不同地块的适种性。
 
 \subsection{各类型作物平均亩产量分析}
-
+各类型作物平均亩产量的分析评估了不同作物的单位面积生产效益，以此识别高产作物，提升耕地资源的利用效率，优化作物选择和种植结构，从而提高整体农业产量。分析结果将为制定科学合理的种植规划提供重要的依据，具体如下图所示：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.9\textwidth]{Figure_2.png}
+    \caption{各类型作物平均亩产量}
+    \label{fig:crop_yield}
+\end{figure}
+由图可见，食用菌与蔬菜的平均亩产量最高，其原因一方面在于生长周期较短、种植密度较高，另一方面在于具有大棚等理想种植条件实现多次收获。与之相对地，豆类和粮食作物由于生长周期长，种植密度低，且豆类作物的主要功能在于改善土壤结构，因而其平均亩产量相对较低。
 \section{准备工作/预处理}
 \subsection{.csv文件的生成}
 我们发现即使panda库中有read\_excel()函数可以直接读取附件中的.xlsx文件，但是其有一系列问题，例如.xlsx中合并的单元格会导致数据读取错误，只有第一个单元格的数据能被读取，并且读取的速度较慢等，因此我们选择将数据转换为.csv格式。.csv作为文本格式，相较于.xlsx格式更加方便处理。因此，我们将原始数据转换为.csv格式，以便于后续的数据处理和模型构建。src/utils/xlsx to csv/main.py中详细记录了生成.csv文件的源代码。
@@ -330,6 +337,8 @@ b) 目标函数的制定也可能导致求解器发现最好不植入任何东�
 
 
 \subsection{模型的改进}
+
+
 \begin{thebibliography}{99}  
 \bibitem{ref1} 孙飞.农作物生产专业化对农户生计的影响研究[D].中南财经政法大学,2020.DOI:10.27660/d.cnki.gzczu.2020.002168.
 \bibitem{ref2} 杨晓娟,刘布春,刘园,等.我国大豆种植时空分布与风险费率研究[J].中国农业资源与区划,2021,42(01):106-115.
