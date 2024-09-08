@@ -53,24 +53,71 @@ def main(reduction_factor, index):
         return 0
     
     def get_total_yield(crop, year):
-        return sum(planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) for region in regions for season in seasons)
+        return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) for region in regions for season in seasons)
     
-    def get_profit(crop, year):
-        if get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季'):
-            print(0,end='')
-            return lpSum(planting_area[(crop, region, year, season)]
-                         * (get_yield_per_acre(crop, region) * get_price(crop, season) - get_cost(crop, region))
-                        for region in regions for season in seasons
-                    )
-        else:
-            print(1,end='')
-            return lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) - get_expected_sales(crop, season) - get_cost(crop, region))
-                         * get_price(crop, season) * (1 - reduction_factor) 
-                         for region in regions for season in seasons) \
-                    + lpSum(get_expected_sales(crop, season) * get_price(crop, season) for season in seasons)
+    # def get_profit(crop, year):
+    #     if get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季'):
+    #         print(0,end='')
+    #         return lpSum(planting_area[(crop, region, year, season)]
+    #                      * (get_yield_per_acre(crop, region) * get_price(crop, season) - get_cost(crop, region))
+    #                     for region in regions for season in seasons
+    #                 )
+    #     else:
+    #         print(1,end='')
+    #         return lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) - get_expected_sales(crop, season) - get_cost(crop, region))
+    #                      * get_price(crop, season) * (1 - reduction_factor) 
+    #                      for region in regions for season in seasons) \
+    #                 + lpSum(get_expected_sales(crop, season) * get_price(crop, season) for season in seasons)
 
     # 目标函数, 超出预期销售量的部分，价格乘以 reduction_factor
-    linear_model += lpSum(get_profit(crop, year) for crop in crops for year in years)
+    # linear_model += lpSum(get_profit(crop, year) for crop in crops for year in years)
+
+    total_profit = lpSum([])
+    z_list = []
+
+    for crop in crops:
+        for year in years:
+            # Define the auxiliary variables for profit in each case
+            profit_less_or_equal = LpVariable(f"profit_less_or_equal_{crop}_{year}", lowBound=0)
+            profit_greater = LpVariable(f"profit_greater_{crop}_{year}", lowBound=0)
+            z = LpVariable(f"z_{crop}_{year}", cat='Binary')
+
+            z_list.append(z)
+
+            BigM1 = 2.5*1e5
+            BigM2 = 1e8
+
+            # Add constraints to handle the binary logic (Big-M method)
+            linear_model += get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季') + BigM1 * (1 - z)
+            linear_model += get_total_yield(crop, year) >= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季') - BigM1 * z
+
+            # Define the actual profit conditions in terms of these auxiliary variables
+            # If z = 0, profit_less_or_equal should hold the value of the first branch
+            # If z = 1, profit_greater should hold the value of the second branch
+
+            # Constraint for profit in the "less or equal" case
+            linear_model += profit_less_or_equal == lpSum(planting_area[(crop, region, year, season)]
+                                                    * (get_yield_per_acre(crop, region) * get_price(crop, season) - get_cost(crop, region))
+                                                    for region in regions for season in seasons)
+
+            # Constraint for profit in the "greater" case
+            linear_model += profit_greater == lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) - get_expected_sales(crop, season) - get_cost(crop, region))
+                                            * get_price(crop, season) * (1 - reduction_factor)
+                                            for region in regions for season in seasons) \
+                                        + lpSum(get_expected_sales(crop, season) * get_price(crop, season) for season in seasons)
+
+            # The final profit is determined by z, so we define the overall profit
+            profit = LpVariable(f"profit_{crop}_{year}", lowBound=0)
+
+            # Constrain the final profit to be one of the two cases
+            # When z = 1, profit <= profit_less_or_equal, when z = 0, profit <= profit_greater
+            linear_model += profit <= profit_less_or_equal + BigM2 * (1 - z)
+            linear_model += profit <= profit_greater + BigM2 * z
+
+            # Now, you can add the objective to maximize the profit
+            total_profit += profit
+
+    linear_model += total_profit
 
     # 加十三个约束条件：
     # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。 [已被12包含]
@@ -195,7 +242,7 @@ def main(reduction_factor, index):
     # )
     
     linear_model.writeLP("model.lp")
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=150))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1000))
 
 
     # for var in planting_decision.values():
@@ -225,7 +272,10 @@ def main(reduction_factor, index):
     output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
     output_df.to_excel('result_1_' + str(index) + '.xlsx', index=False)
 
+    for z in z_list:
+        print(z.varValue, end='')
+
 
 if __name__ == "__main__":
-    main(1, 1)
+    # main(1, 1)
     main(0.5, 2)

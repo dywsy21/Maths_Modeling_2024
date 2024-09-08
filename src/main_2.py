@@ -137,7 +137,6 @@ def main(reduction_factor):
     
     def get_seasonly_yield(crop, year, season):
         return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] for region in regions)
-
     
     # object function
     def get_profit(crop, year):
@@ -190,8 +189,76 @@ def main(reduction_factor):
                 for season in seasons
             )
 
-    linear_model += lpSum(get_profit_robust(crop, year) for crop in crops for year in years)
+    # linear_model += lpSum(get_profit_robust(crop, year) for crop in crops for year in years)
 
+    total_profit = lpSum([])
+    z_list = []
+
+    for crop in crops:
+        for year in years:
+                    # 确定价格、产量和销售量的不确定性波动
+            delta_price = 0.05  # 假设价格最大波动范围为 ±5%
+            delta_yield = 0.10  # 假设产量最大波动范围为 ±10%
+            delta_sales = 0.10  # 假设销售量最大波动范围为 ±10%
+
+            # 获取该作物的总产量，考虑不确定性
+            total_yield_uncertain = lpSum(
+                planting_area[(crop, region, year, season)] * (1 - delta_yield) * get_yield_per_acre_list(crop, region)[year - 2024]
+                for region in regions for season in seasons
+            )
+            _risk = risk(crop, year)
+            # Define the auxiliary variables for profit in each case
+            profit_less_or_equal = LpVariable(f"profit_less_or_equal_{crop}_{year}", lowBound=0)
+            profit_greater = LpVariable(f"profit_greater_{crop}_{year}", lowBound=0)
+            z = LpVariable(f"z_{crop}_{year}", cat='Binary')
+
+            z_list.append(z)
+
+            BigM1 = 3*1e5
+            BigM2 = 5*1e7
+
+            # Add constraints to handle the binary logic (Big-M method)
+            linear_model += get_total_yield(crop, year) * _risk <= (get_expected_sales_list(crop, '第一季')[year - 2024] * (1 - delta_sales) +
+                                                        get_expected_sales_list(crop, '第二季')[year - 2024] * (1 - delta_sales)) + BigM1 * (1 - z)
+            linear_model += get_total_yield(crop, year) * _risk >= (get_expected_sales_list(crop, '第一季')[year - 2024] * (1 - delta_sales) +
+                                                        get_expected_sales_list(crop, '第二季')[year - 2024] * (1 - delta_sales)) - BigM1 * z
+
+            # Define the actual profit conditions in terms of these auxiliary variables
+            # If z = 0, profit_less_or_equal should hold the value of the first branch
+            # If z = 1, profit_greater should hold the value of the second branch
+
+            # Constraint for profit in the "less or equal" case
+            linear_model += profit_less_or_equal == lpSum(
+                planting_area[(crop, region, year, season)] *
+                ((1 - delta_yield) * get_yield_per_acre_list(crop, region)[year - 2024] * 
+                (1 - delta_price) * get_price_list(crop, season)[year - 2024] * _risk -
+                get_cost_list(crop, region)[year - 2024])
+                for region in regions for season in seasons
+            )
+
+            # Constraint for profit in the "greater" case
+            linear_model += profit_greater == lpSum(
+                (planting_area[(crop, region, year, season)] * (1 - delta_yield) * get_yield_per_acre_list(crop, region)[year - 2024] -
+                get_expected_sales_list(crop, season)[year - 2024]) * (1 - delta_price) * get_price_list(crop, season)[year - 2024] *
+                (1 - reduction_factor)
+                for region in regions for season in seasons
+            ) + lpSum(
+                get_expected_sales_list(crop, season)[year - 2024] * (1 - delta_price) * get_price_list(crop, season)[year - 2024]
+                for season in seasons
+            )
+
+            # The final profit is determined by z, so we define the overall profit
+            profit = LpVariable(f"profit_{crop}_{year}", lowBound=0)
+
+            # Constrain the final profit to be one of the two cases
+            # When z = 1, profit <= profit_less_or_equal, when z = 0, profit <= profit_greater
+            linear_model += profit <= profit_less_or_equal + BigM2 * (1 - z)
+            linear_model += profit <= profit_greater + BigM2 * z
+
+            # Now, you can add the objective to maximize the profit
+            total_profit += profit
+
+    linear_model += total_profit
     # 加十三个约束条件：
     # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。 [已被12包含]
     # Already included in 12
@@ -298,7 +365,7 @@ def main(reduction_factor):
                     linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
 
     linear_model.writeLP("model2.lp") # ***edited
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=100))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=600))
 
 
     # for var in planting_decision.values():
@@ -328,6 +395,9 @@ def main(reduction_factor):
     # output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
     # output_df.to_excel('result_2.xlsx', index=False)
 
+    for z in z_list:
+        print(z.varValue, end=' ')
+
     return output, yearly_obj_values
 
 def merge(output1: list, output2: list):
@@ -354,6 +424,10 @@ if __name__ == "__main__":
         output, yearly_obj_values = main(0.5)
         output_list.append(output)
         yearly_obj_values_list.append(yearly_obj_values)
+        if i == 0:
+            output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
+            print("Saved result_2.xlsx!")
+            output_df.to_excel('result_2.xlsx', index=False)
 
     for i in range(1, times):
         yearly_obj_values_list[0] = [yearly_obj_values_list[0][j] + yearly_obj_values_list[i][j] for j in range(len(yearly_obj_values_list[0]))]
@@ -367,6 +441,3 @@ if __name__ == "__main__":
 
     output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
     output_df.to_excel('result_2_average.xlsx', index=False)
-
-    output_df_first = pd.DataFrame(output_list[0], columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
-    output_df_first.to_excel('result_2.xlsx', index=False)
