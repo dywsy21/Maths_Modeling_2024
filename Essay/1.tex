@@ -197,38 +197,38 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
 
 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。（仔细检查附件数据后，我们发现这里的单季其实就等价于第一季）
    \begin{equation}
-    y_{c,r,y,\text{第二季}} = 0, \quad \forall r \in \{\text{平旱地、梯田和山坡地}\}  % finished
+    y_{c,r,y,2} = 0, \quad \forall r \in \{\text{平旱地、梯田、山坡地}\}  % finished
    \end{equation}
 
 2. 水浇地每年可以单季种植水稻或两季种植蔬菜作物。（仔细检查附件数据后，我们发现这里的单季其实就等价于第一季）
    \begin{equation}
-    y_{\text{水稻},\text{水浇地},y,\text{第一季}} = 1 \quad \text{or} \quad  % finished
-    \sum_{c \in \text{蔬菜}} y_{c,r,y,\text{第一季}} = 2 
+    y_{\text{水稻},\text{水浇地},y,1} = 1 \quad \text{or} \quad  % finished
+    \sum_{c \in \text{蔬菜}} y_{c,r,y,1} = 2 
    \end{equation}
 
 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
    \begin{equation}
-   \sum_{c \in \text{蔬菜}} A_{c,r,y,1} \leq A_r, \quad \sum_{c \in \{\text{大白菜, 白萝卜, 红萝卜}\}} A_{c,r,y,2} \leq A_r
+   \sum_{c \in \text{蔬菜 - \{大白菜、白萝卜、红萝卜\}}} y_{c,\text{水浇地},y,1} = 0, \quad \sum_{c \in \{\text{大白菜, 白萝卜, 红萝卜}\}} y_{c,\text{水浇地},y,2} \leq 1
    \end{equation}
 
 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。
    \begin{equation}
-   A_{c,r,y,1} = 0, \quad \forall c \in \{\text{大白菜, 白萝卜, 红萝卜}\}
+   y_{c,\text{水浇地},y,1} = 0, \quad \forall c \in \{\text{大白菜, 白萝卜, 红萝卜}\}
    \end{equation}
 
 5. 普通大棚每年种植两季作物，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外），第二季只能种植食用菌。
    \begin{equation}
-   \sum_{c \in \text{蔬菜}} A_{c,r,y,1} \leq A_r, \quad \sum_{c \in \text{食用菌}} A_{c,r,y,2} \leq A_r
+    \sum_{c \in \text{所有作物 - (蔬菜 - \{大白菜、白萝卜、红萝卜\})}} y_{c,\text{普通大棚},y,1} = 0, \quad \sum_{c \notin \text{食用菌}} y_{c,r,y,2} = 0
    \end{equation}
 
 6. 因食用菌类适应在较低且适宜的温度和湿度环境中生长，所以只能在秋冬季的普通大棚里种植。
    \begin{equation}
-   A_{c,r,y,1} = 0, \quad \forall c \in \text{食用菌}
+    y_{\text{食用菌},\text{普通大棚},y,1} = 0, \quad \forall r \notin \{\text{普通大棚}\}
    \end{equation}
 
 7. 智慧大棚每年都可种植两季蔬菜（大白菜、白萝卜和红萝卜除外）。
    \begin{equation}
-   \sum_{c \in \text{蔬菜}} A_{c,r,y,s} \leq A_r
+    \sum_{c \in \text{所有作物 - (蔬菜 - \{大白菜、白萝卜、红萝卜\})}} y_{c,\text{智慧大棚},y,1} = 0
    \end{equation}
 
 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
@@ -257,9 +257,14 @@ src/utils/attachment1\_format\_optimization/main.py中详细记录了优化附�
     \end{equation}
 
 13. 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产。
-    \begin{equation}
-    y_{c,r,y,s} + y_{c,r,y+1,s} <= 1
-    \end{equation}
+    \begin{align}
+    &y_{c,r,y,s} + y_{c,r,y,s+1} <= 1, \quad \forall 2024 <= y <= 2030 \quad  \\ \quad &y_{c,r,y,1} + y_{c,r,y-1,2} <= 1, \quad \forall 2025 <= y <= 2030
+    \end{align}
+
+最后，还需确定两个决策变量的关系，即：
+\begin{equation}
+    x_{c,r,y,s} = y_{c,r,y,s} \cdot A_{c,r,y,s}
+\end{equation}
 
 % \begin{enumerate}
 %     \item 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。
