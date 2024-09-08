@@ -136,7 +136,7 @@ def main(reduction_factor):
         return ret_cost
     
     def get_total_yield(crop, year):
-        return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] * risk(crop, year, season) for region in regions for season in seasons)
+        return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] for region in regions for season in seasons)
     
     def get_seasonly_yield(crop, year, season):
         return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] for region in regions)
@@ -154,9 +154,43 @@ def main(reduction_factor):
                          * get_price_list(crop, season)[year-2024] * (1 - reduction_factor) 
                          for region in regions for season in seasons) \
                     + lpSum(get_expected_sales_list(crop, season)[year-2024] * get_price_list(crop, season)[year-2024] for season in seasons)
-    
 
-    linear_model += lpSum(get_profit(crop, year) for crop in crops for year in years)
+    def get_profit_robust(crop, year):
+        # 确定价格、产量和销售量的不确定性波动
+        delta_price = 0.05  # 假设价格最大波动范围为 ±5%
+        delta_yield = 0.10  # 假设产量最大波动范围为 ±10%
+        delta_sales = 0.10  # 假设销售量最大波动范围为 ±10%
+
+        # 获取该作物的总产量，考虑不确定性
+        total_yield_uncertain = lpSum(
+            planting_area[(crop, region, year, season)] * (1 - delta_yield) * get_yield_per_acre_list(crop, region)[year - 2024]
+            for region in regions for season in seasons
+        )
+
+        # 如果总产量小于或等于预期销售量（考虑销售量波动）
+        if total_yield_uncertain * risk(crop, year) <= (get_expected_sales_list(crop, '第一季')[year - 2024] * (1 - delta_sales) +
+                                                        get_expected_sales_list(crop, '第二季')[year - 2024] * (1 - delta_sales)):
+            # 正常利润计算
+            return lpSum(
+                planting_area[(crop, region, year, season)] *
+                ((1 - delta_yield) * get_yield_per_acre_list(crop, region)[year - 2024] * 
+                (1 - delta_price) * get_price_list(crop, season)[year - 2024] * risk(crop, year) -
+                get_cost_list(crop, region)[year - 2024])
+                for region in regions for season in seasons
+            )
+        else:
+            # 考虑到销售超过预期的情况
+            return lpSum(
+                (planting_area[(crop, region, year, season)] * (1 - delta_yield) * get_yield_per_acre_list(crop, region)[year - 2024] -
+                get_expected_sales_list(crop, season)[year - 2024]) * (1 - delta_price) * get_price_list(crop, season)[year - 2024] *
+                (1 - reduction_factor)
+                for region in regions for season in seasons
+            ) + lpSum(
+                get_expected_sales_list(crop, season)[year - 2024] * (1 - delta_price) * get_price_list(crop, season)[year - 2024]
+                for season in seasons
+            )
+
+    linear_model += lpSum(get_profit_robust(crop, year) for crop in crops for year in years)
 
     # 加十三个约束条件：
     # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。 [已被12包含]
@@ -246,8 +280,8 @@ def main(reduction_factor):
         for region in regions:
             for year in years:
                 for season in seasons:
-                    if region_areas[region] in crop_to_condition[crop]:
-                        if season not in crop_to_condition[crop][region_areas[region]]:
+                    if region_to_type[region] in crop_to_condition[crop]:
+                        if season not in crop_to_condition[crop][region_to_type[region]]:
                             linear_model += planting_decision[(crop, region, year, season)] == 0
                     else:
                         linear_model += planting_decision[(crop, region, year, season)] == 0
@@ -283,16 +317,16 @@ def main(reduction_factor):
     # Output results
     results = {year: {crop: {region: {season: planting_area[(crop, region, year, season)].varValue for season in seasons} for region in regions} for crop in crops} for year in years}
 
-    # 作物名称 地块编号 种植季节 种植数量 四列数据
-
-    result_list = []
+    # 作物名称 地块编号 种植季节 种植数量 年份 五列数据
+    output = []
     for year in years:
         for crop in crops:
             for region in regions:
                 for season in seasons:
-                    result_list.append([crop, region, season, results[year][crop][region][season]])
-    result_df = pd.DataFrame(result_list, columns=['作物名称', '地块编号', '种植季节', '种植数量'])
-    result_df.to_excel("result2.xlsx")
+                    output.append([crop, region, season,year ,planting_area[(crop, region, year, season)].varValue])
+
+    output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
+    output_df.to_excel('result_2.xlsx', index=False)
 
 
 if __name__ == "__main__":
