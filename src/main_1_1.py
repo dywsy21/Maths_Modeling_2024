@@ -14,7 +14,7 @@ def main(reduction_factor, index):
     crops = full_table['作物名称'].unique()
 
     region_areas = {}
-    for index, row in full_table.iterrows():
+    for i, row in full_table.iterrows():
         if row['种植地块'] not in region_areas:
             region_areas[row['种植地块']] = row['种植面积/亩']
         else:
@@ -230,7 +230,7 @@ def main(reduction_factor, index):
                 for season in seasons:
                     result_list.append([crop, region, season, results[year][crop][region][season]])
     result_df = pd.DataFrame(result_list, columns=['作物名称', '地块编号', '种植季节', '种植数量'])
-    result_df.to_excel("result_" + str(index) + ".xlsx")
+    result_df.to_excel("result1_" + str(index) + ".xlsx")
 
 
 
