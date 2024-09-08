@@ -85,7 +85,7 @@ def main(reduction_factor):
     cost_rate = 1.05
 
     # reduction of production considering risk
-    bean_dis_rate = 0.2724 # 粮食（豆类）
+    bean_dis_rate = 0.0325 # 粮食（豆类）
     grain_dis_rate = 0.03
     veg_dis_rate = 0.1
     fungi_dis_rate = 0.2
