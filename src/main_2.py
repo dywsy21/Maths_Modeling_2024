@@ -58,8 +58,6 @@ def main(reduction_factor):
                 return row['种植成本/(元/亩)']
         return 0
     
-    
-
 
     # change rate
     sales_rate = {}
