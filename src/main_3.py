@@ -107,6 +107,12 @@ def main(reduction_factor):
 
 
     # use data for 2024 and change rate to form a list of data for 2024-2030
+
+    # 可替代性作物
+    crop_inter = {
+        '替代豆类': ['黄豆', '黑豆', '红豆', '绿豆', '芸豆'],
+        '替代谷物': ['小麦', '玉米', '谷子', '高粱', '黍子', '荞麦']
+    }
     def get_expected_sales_list(crop, season):# get_expected_sales(crop, season)[year-2024]
         ret_sales = []
         ret_sales.append(get_expected_sales(crop, season))
