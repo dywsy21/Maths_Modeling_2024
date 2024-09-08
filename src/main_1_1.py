@@ -58,8 +58,6 @@ def main(reduction_factor, index):
     def get_total_yield(crop, year):
         return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre(crop, region) for region in regions for season in seasons)
     
-    def my_max(a, b):
-        return a if a >= b else b
     
     def get_profit(crop, year):
         if get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季'):

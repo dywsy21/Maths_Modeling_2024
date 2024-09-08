@@ -115,6 +115,4 @@ def main(reduction_factor, index):
         return lpSum(planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] for region in regions for season in seasons)
     
 
-    def gen_inst()
-
 
