@@ -78,8 +78,8 @@ def main(reduction_factor, index):
     for crop in crops:
         for year in years:
             # Define the auxiliary variables for profit in each case
-            profit_less_or_equal = LpVariable(f"profit_less_or_equal_{crop}_{year}", lowBound=0)
-            profit_greater = LpVariable(f"profit_greater_{crop}_{year}", lowBound=0)
+            profit_less_or_equal = LpVariable(f"profit_less_or_equal_{crop}_{year}")
+            profit_greater = LpVariable(f"profit_greater_{crop}_{year}")
             z = LpVariable(f"z_{crop}_{year}", cat='Binary')
 
             z_list.append(z)
@@ -107,7 +107,7 @@ def main(reduction_factor, index):
                                         + lpSum(get_expected_sales(crop, season) * get_price(crop, season) for season in seasons)
 
             # The final profit is determined by z, so we define the overall profit
-            profit = LpVariable(f"profit_{crop}_{year}", lowBound=0)
+            profit = LpVariable(f"profit_{crop}_{year}")
 
             # Constrain the final profit to be one of the two cases
             # When z = 1, profit <= profit_less_or_equal, when z = 0, profit <= profit_greater
@@ -129,13 +129,13 @@ def main(reduction_factor, index):
 
 
     # # 3. 若在某块水浇地种植两季蔬菜，第一季可种植多种蔬菜（大白菜、白萝卜和红萝卜除外）；第二季只能种植大白菜、白萝卜和红萝卜中的一种（便于管理）。
-    # second_season_allowed_crops = ['大白菜', '白萝卜', '红萝卜']
+    second_season_allowed_crops = ['大白菜', '白萝卜', '红萝卜']
 
-    # for region in regions:
-    #     for year in years:
-    #         if region_areas[region] == '水浇地':
-    #             second_season_constraint = lpSum(planting_decision[(crop, region, year, '第二季')] for crop in second_season_allowed_crops)
-    #             linear_model += (second_season_constraint <= 1)
+    for region in regions:
+        for year in years:
+            if region_areas[region] == '水浇地':
+                second_season_constraint = lpSum(planting_decision[(crop, region, year, '第二季')] for crop in second_season_allowed_crops)
+                linear_model += (second_season_constraint <= 1)
 
     # 4. 根据季节性要求，大白菜、白萝卜和红萝卜只能在水浇地的第二季种植。  [已被12包含]
     # Already included in 12      
@@ -151,27 +151,27 @@ def main(reduction_factor, index):
 
 
     # # 8. 从 2023 年开始要求每个地块（含大棚）的所有土地三年内至少种植一次豆类作物。
-    # bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
-    # for region in regions:
-    #     for y_begin in range(2024, 2029):
-    #         linear_model += lpSum(planting_decision[crop, region, year, season] for crop in bean_crops 
-    #                               for year in range(y_begin, y_begin + 3) for season in seasons) >= 1
+    bean_crops = ['黄豆', '黑豆', '红豆', '绿豆', '爬豆', '豇豆', '刀豆', '芸豆']
+    for region in regions:
+        for y_begin in range(2024, 2029):
+            linear_model += lpSum(planting_decision[crop, region, year, season] for crop in bean_crops 
+                                  for year in range(y_begin, y_begin + 3) for season in seasons) >= 1
 
     # # 9. 每种作物每季的种植地不能太分散。我们限制最大种植地块数为 8。
-    # for year in years:
-    #     for crop in crops:
-    #         for season in seasons:
-    #             linear_model += lpSum(planting_decision[crop, region, year, season] for region in regions) <= 8
+    for year in years:
+        for crop in crops:
+            for season in seasons:
+                linear_model += lpSum(planting_decision[crop, region, year, season] for region in regions) <= 8
 
 
 
     # # 10. 每种作物在单个地块（含大棚）种植的面积不宜太小。我们限制最小种植面积为 30%。
-    # for crop in crops:
-    #     for region in regions:
-    #         for year in years:
-    #             for season in seasons:
-    #                 linear_model += planting_area[crop, region, year, season] >= 0.3 * region_areas[region] * planting_decision[crop, region, year, season]
-    #                 linear_model += planting_area[crop, region, year, season] <= region_areas[region] * planting_decision[crop, region, year, season]
+    for crop in crops:
+        for region in regions:
+            for year in years:
+                for season in seasons:
+                    linear_model += planting_area[crop, region, year, season] >= 0.3 * region_areas[region] * planting_decision[crop, region, year, season]
+                    linear_model += planting_area[crop, region, year, season] <= region_areas[region] * planting_decision[crop, region, year, season]
 
         
 
@@ -182,7 +182,7 @@ def main(reduction_factor, index):
                 linear_model += lpSum(planting_area[crop, region, year, season] for crop in crops) <= region_areas[region]
 
 
-    # 12. 每种作物须满足相应的种植条件
+    # # 12. 每种作物须满足相应的种植条件
     crop_to_condition = {}
     for i, row in file2.iterrows():
         text: str = row['种植耕地']
@@ -211,14 +211,14 @@ def main(reduction_factor, index):
                         
     
     # # 13: 每种作物在同一地块（含大棚）都不能连续重茬种植，否则会减产
-    # for crop in crops:
-    #     for region in regions:
-    #         for year in years:
-    #             # 同一年的第一季和第二季
-    #             linear_model += (planting_decision[crop, region, year, '第一季'] + planting_decision[crop, region, year, '第二季'] <= 1)
-    #             # 上一年第二季和下一年第一季
-    #             if year < 2030:
-    #                 linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
+    for crop in crops:
+        for region in regions:
+            for year in years:
+                # 同一年的第一季和第二季
+                linear_model += (planting_decision[crop, region, year, '第一季'] + planting_decision[crop, region, year, '第二季'] <= 1)
+                # 上一年第二季和下一年第一季
+                if year < 2030:
+                    linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
 
     # # test constraint: all crops's area <= 1
     # for crop in crops:
