@@ -1,7 +1,7 @@
 import pandas as pd
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
 import numpy as np
-from main_1_1 import *
+from main_1 import *
 import random
 
 def main(reduction_factor):
@@ -85,7 +85,7 @@ def main(reduction_factor):
     cost_rate = 1.05
 
     # reduction of production considering risk
-    bean_dis_rate = 0.2724 # 粮食（豆类）
+    bean_dis_rate = 0.0325 # 粮食（豆类）
     grain_dis_rate = 0.03
     veg_dis_rate = 0.1
     fungi_dis_rate = 0.2
@@ -155,7 +155,7 @@ def main(reduction_factor):
                          for region in regions for season in seasons) \
                     + lpSum(get_expected_sales_list(crop, season)[year-2024] * get_price_list(crop, season)[year-2024] for season in seasons)
 
-    def get_profit_robust(crop, year):
+    def get_profit_robust(crop, year): # 鲁棒优化
         # 确定价格、产量和销售量的不确定性波动
         delta_price = 0.05  # 假设价格最大波动范围为 ±5%
         delta_yield = 0.10  # 假设产量最大波动范围为 ±10%
