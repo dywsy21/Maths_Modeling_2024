@@ -84,7 +84,7 @@ def main(reduction_factor, index):
 
             z_list.append(z)
 
-            BigM1 = 2.5*1e5
+            BigM1 = 2*1e6
             BigM2 = 1e8
 
             # Add constraints to handle the binary logic (Big-M method)
@@ -242,7 +242,7 @@ def main(reduction_factor, index):
     # )
     
     linear_model.writeLP("model.lp")
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1000))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=600))
 
 
     # for var in planting_decision.values():
