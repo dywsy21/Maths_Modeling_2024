@@ -198,14 +198,14 @@ def main(reduction_factor):
         for year in years:
             _risk = risk(crop, year)
             # Define the auxiliary variables for profit in each case
-            profit_less_or_equal = LpVariable(f"profit_less_or_equal_{crop}_{year}", lowBound=0)
-            profit_greater = LpVariable(f"profit_greater_{crop}_{year}", lowBound=0)
+            profit_less_or_equal = LpVariable(f"profit_less_or_equal_{crop}_{year}")
+            profit_greater = LpVariable(f"profit_greater_{crop}_{year}")
             z = LpVariable(f"z_{crop}_{year}", cat='Binary')
 
             z_list.append(z)
 
-            BigM1 = 3*1e5
-            BigM2 = 5*1e7
+            BigM1 = 3 * 1e6
+            BigM2 = 1e8
 
             # Add constraints to handle the binary logic (Big-M method)
             linear_model += get_total_yield(crop, year) * _risk <= get_expected_sales_list(crop, '第一季')[year-2024] + get_expected_sales_list(crop, '第二季')[year-2024] + BigM1 * (1 - z)
@@ -228,7 +228,7 @@ def main(reduction_factor):
                     + lpSum(get_expected_sales_list(crop, season)[year-2024] * get_price_list(crop, season)[year-2024] for season in seasons)
 
             # The final profit is determined by z, so we define the overall profit
-            profit = LpVariable(f"profit_{crop}_{year}", lowBound=0)
+            profit = LpVariable(f"profit_{crop}_{year}")
 
             # Constrain the final profit to be one of the two cases
             # When z = 1, profit <= profit_less_or_equal, when z = 0, profit <= profit_greater
@@ -345,7 +345,7 @@ def main(reduction_factor):
                     linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
 
     linear_model.writeLP("model2.lp") # ***edited
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=200))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1000))
 
 
     # for var in planting_decision.values():
