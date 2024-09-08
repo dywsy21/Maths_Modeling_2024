@@ -252,12 +252,12 @@ def main(reduction_factor):
 
             # Constraint for profit in the "less or equal" case
             linear_model += profit_less_or_equal == lpSum(planting_area[(crop, region, year, season)]
-                         * (get_yield_per_acre_list(crop, region)[year-2024] * get_price_list(crop, season)[year-2024] * _risk - get_cost_list(crop, region)[year-2024])
+                         * (get_yield_per_acre_list(crop, region)[year-2024] * get_price_list(crop, season)[year-2024] * _risk * sup_coef(crop, region, year, season) - get_cost_list(crop, region)[year-2024])
                         for region in regions for season in seasons
                     )
 
             # Constraint for profit in the "greater" case
-            linear_model += profit_greater == lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] - get_expected_sales_list(crop, season)[year-2024] - get_cost_list(crop, region)[year-2024])
+            linear_model += profit_greater == lpSum((planting_area[(crop, region, year, season)] * get_yield_per_acre_list(crop, region)[year-2024] * sup_coef(crop, region, year, season) - get_expected_sales_list(crop, season)[year-2024] - get_cost_list(crop, region)[year-2024])
                          * get_price_list(crop, season)[year-2024] * (1 - reduction_factor) 
                          for region in regions for season in seasons) \
                     + lpSum(get_expected_sales_list(crop, season)[year-2024] * get_price_list(crop, season)[year-2024] for season in seasons)
@@ -274,7 +274,7 @@ def main(reduction_factor):
             total_profit += profit
 
     linear_model += total_profit
-    
+
     # 加十三个约束条件：
     # 1. 平旱地、梯田和山坡地每年适宜单季种植粮食类作物（水稻除外）。 [已被12包含]
     # Already included in 12
