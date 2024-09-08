@@ -84,8 +84,8 @@ def main(reduction_factor, index):
 
             z_list.append(z)
 
-            BigM1 = 3*1e5
-            BigM2 = 5*1e7
+            BigM1 = 2.5*1e5
+            BigM2 = 1e8
 
             # Add constraints to handle the binary logic (Big-M method)
             linear_model += get_total_yield(crop, year) <= get_expected_sales(crop, '第一季') + get_expected_sales(crop, '第二季') + BigM1 * (1 - z)
@@ -242,7 +242,7 @@ def main(reduction_factor, index):
     # )
     
     linear_model.writeLP("model.lp")
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=300))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1000))
 
 
     # for var in planting_decision.values():
@@ -277,5 +277,5 @@ def main(reduction_factor, index):
 
 
 if __name__ == "__main__":
-    main(1, 1)
+    # main(1, 1)
     main(0.5, 2)
