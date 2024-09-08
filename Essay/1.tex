@@ -73,7 +73,9 @@
 
 总而言之，我们需要构建一个以最大化总收益为目标的目标函数，同时建立相应的涵盖种植类型、重茬限制、豆类种植要求等多个方面的约束条件。通过使用线性规划求解算法来求解该模型，并验证结果是否符合所有的约束条件。最终，通过调整模型参数和约束条件，可以进一步优化方案，以确保其在实际操作中具备可行性和最大化经济效益的潜力。通过这样的分析方式，可以得出符合2024-2030年经济效益最大化目标的最优种植方案。
 
-
+\subsection{问题二的分析}
+问题2的设定大体上延续了问题1的设定，而进一步提出了农作物的预期销售量、种植成本、亩产量、销售价格的变化趋势。因此我们可以直接沿用问题1的模型，在其中增加或更改代码以适用于问题2的目标。问题2的目标是在考虑未来销售量、价格、气候变化和种植成本等不确定因素的影响下，优化种植策略以确保收益的稳定性和风险的最小化。因此，我们需要在问题1的基础上，引入一些新的变量和约束条件，以适应问题2的要求。其中，题干中提到一些量的年平均变化率在一个区间内波动，对于这一随机波动的刻画是问题2的基础。\\\\
+问题二中核心问题是将各种农作物的种植风险量化为可编程可计算的代码。在实际农业生产中，自然灾害等风险因素会因地区、作物种类和种植条件的不同而有很大差异。但是我们可以通过查阅文献和综合研判各种风险等方式粗略给出了各种农作物的种植风险，并给出一个固定的数值作为农作物发生减产的概率。\\\\
 
 \section{模型假设}
 \subsection{问题一的假设}
@@ -581,9 +583,14 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
 \bibitem{ref5} 罗屹,史畅,黄汉权,等.中国大豆多元化布局和替代战略前景[J].中国农业文摘-农业工程,2023,35(06):65-71.DOI:10.19518/j.cnki.cn11-2531/s.2023.0101.
 \bibitem{ref6} 张传芳.基于情景规划的城市低效工业用地再开发潜力评价研究[D].中国矿业大学,2023.DOI:10.27623/d.cnki.gzkyu.2023.000268.
 \bibitem{ref7} 黄宇蝶.面向国土空间规划的土地利用多情景模拟研究[D].西南科技大学,2023.DOI:10.27415/d.cnki.gxngc.2023.000511.
+<<<<<<< HEAD
+\bibitem{ref8} Ankita Begam, Mahadev Pramanick, Susanta Dutta, Bappa Paramanik, Gopal Dutta, Partha Sarathi Patra, Arindam Kundu, Asim Biswas, Inter-cropping patterns and nutrient management effects on maize growth, yield and quality,
+Field Crops Research, Volume 310, 2024, 109363, ISSN 0378-4290
+=======
 
 
 \bibitem{ref8} Zhang, X., Kong, Y., Lv, Y., Yao, F., Cao, Y., Shao, X., Geng, Y., Wang, L., \& Wang, Y. (2024). Increased topsoil depth required to support increased grain yield production in high density maize. Field Crops Research.
+>>>>>>> cd559b51eaa573cc41e4dc7f1e2e28a90d5c39af
 
 
 
@@ -753,7 +760,6 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
                         linear_model += planting_area[crop, region, year, season] >= 0.3 * region_areas[region] * planting_decision[crop, region, year, season]
                         linear_model += planting_area[crop, region, year, season] <= region_areas[region] * planting_decision[crop, region, year, season]
     
-            
     
         # 11. 不能超出地块面积
         for region in regions:
@@ -800,30 +806,8 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
                     if year < 2030:
                         linear_model += (planting_decision[crop, region, year, '第二季'] + planting_decision[crop, region, year+1, '第一季'] <= 1)
     
-        # # test constraint: all crops's area <= 1
-        # for crop in crops:
-        #     for region in regions:
-        #         for year in years:
-        #             for season in seasons:
-        #                 linear_model += planting_area[crop, region, year, season] <= 1
-    
-    
-    
-    
-    
-        # # Define the target function: Maximize profit excluding dormant sales
-        # linear_model += lpSum(
-        #     get_price(crop, season) * get_yield_per_acre(crop, region) * planting_area[crop, region, year, season] - planting_area[crop, region, year, season] * get_cost(crop, region)
-        #     for crop in crops for region in regions for year in years for season in seasons
-        # )
-        
         linear_model.writeLP("model.lp")
         linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1500))
-    
-    
-        # for var in planting_decision.values():
-        #     if var.varValue not in [0, 1]:
-        #         print(f"Variable {var.name} has a non-binary value: {var.varValue}")
     
     # Calculate target function values for each year
         for k in years:
@@ -848,10 +832,7 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
         output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
         output_df.to_excel('result_1_' + str(index) + '.xlsx', index=False)
     
-        for z in z_list:
-            print(z.varValue, end='')
-    
-    
+
     if __name__ == "__main__":
         # main(1, 1)
         main(0.5, 2)
@@ -947,12 +928,6 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
         grain_dis_rate = 0.03
         veg_dis_rate = 0.1
         fungi_dis_rate = 0.2
-        # risk_list = []
-        # for j in range(4):
-        #     temp = []
-        #     for i in years:
-        #         temp.append(random.random())
-        #     risk_list.append(temp)
     
         def risk(crop, year): # 蒙特卡洛算法实现
             if crop_to_type[crop] == '粮食（豆类）':
@@ -1159,8 +1134,6 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
                         linear_model += planting_area[crop, region, year, season] >= 0.3 * region_areas[region] * planting_decision[crop, region, year, season]
                         linear_model += planting_area[crop, region, year, season] <= region_areas[region] * planting_decision[crop, region, year, season]
     
-            
-    
         # 11. 不能超出地块面积
         for region in regions:
             for year in years:
@@ -1208,11 +1181,6 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
     
         linear_model.writeLP("model2.lp") # ***edited
         linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=200))
-    
-    
-        # for var in planting_decision.values():
-        #     if var.varValue not in [0, 1]:
-        #         print(f"Variable {var.name} has a non-binary value: {var.varValue}")
     
     # Calculate target function values for each year
         yearly_obj_values = []
@@ -1318,7 +1286,7 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
         planting_area = LpVariable.dicts("planting_area", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], lowBound=0, cat='Continuous')
         planting_decision = LpVariable.dicts("planting_decision", [(crop, region, year, season) for crop in crops for region in regions for year in years for season in seasons], cat='Binary')
     
-        # functions in main_1_1 (to get data for 2024)
+        # functions in main_1 (to get data for 2024)
         def get_expected_sales(crop, season):
             ret = 0
             for i, row in full_table.iterrows():
@@ -1354,7 +1322,6 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
                 sales_rate[row['作物名称']] = lambda: np.random.uniform(0.95, 1.05) #! TODO: potential misunderstanding
     
         
-    
         price_rate = {}
         for index, row in file2.iterrows():
             if row['作物名称'] == '羊肚菌':
@@ -1375,12 +1342,6 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
         grain_dis_rate = 0.03
         veg_dis_rate = 0.1
         fungi_dis_rate = 0.2
-        # risk_list = []
-        # for j in range(4):
-        #     temp = []
-        #     for i in years:
-        #         temp.append(random.random())
-        #     risk_list.append(temp)
     
         def risk(crop, year): # 蒙特卡洛算法实现
             if crop_to_type[crop] == '粮食（豆类）':
@@ -1394,7 +1355,6 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
     
     
         # use data for 2024 and change rate to form a list of data for 2024-2030
-    
         # 可替代性作物列表
         crop_inter = {
             '替代豆类': ['黄豆', '黑豆', '红豆', '绿豆', '芸豆'],
@@ -1709,5 +1669,113 @@ E^*_{c,s} = E_{c,s}   + \alpha_{c,s} \cdot \sum_{c} E_{c,s}
         main(1)
     
 \end{lstlisting}
+
+\section{附录 工具代码}
+\subsection{计算2023年利润数据的代码}
+\begin{lstlisting}[language=python]
+
+\end{lstlisting}
+
+\subsection{将excel转换成csv的代码}
+\begin{lstlisting}[language=python]
+src/utils/xlsx to csv/main.py
+# transform the data from .xlsx files to .csv files
+
+import pandas as pd
+import os
+from hello import hello
+
+# the core tramformation function
+def transform(file_name):
+    # read all the pages in the excel file
+    data = pd.ExcelFile(file_name)
+    for sheet_name in data.sheet_names:
+        data = pd.read_excel(file_name, sheet_name = sheet_name)
+        data.to_csv(file_name[:-5] + '_' + sheet_name + '.csv', index = False, encoding='utf-8')
+
+if __name__ == "__main__":
+    for file in os.listdir("xlsx_files"):
+        if file.endswith(".csv"):
+            os.remove("xlsx_files/" + file)
+
+    for excel_file in os.listdir("xlsx_files"):
+        if excel_file.endswith(".xlsx"):
+            transform("xlsx_files/" + excel_file)
+            print(f"{excel_file} has been transformed to csv file")
+    
+
+\end{lstlisting}
+
+\subsection{产生出完整数据表格的代码}
+\begin{lstlisting}[language=python]
+src/utils/generate_full_table/generate_full_table.py
+
+import pandas as pd
+
+the_csv_to_be_appended = pd.read_csv('附件/附件(csv)/附件2_2023年的农作物种植情况.csv', encoding='utf-8-sig')
+file_1 = pd.read_csv('附件/附件(csv)/附件1_乡村的现有耕地.csv', encoding='utf-8-sig')
+file_2 = pd.read_csv('附件/附件(csv)/附件2_2023年统计的相关数据.csv', encoding='utf-8-sig')
+
+# add 地块类型 from 附件1_乡村的现有耕地 to 附件2_2023年的农作物种植情况
+def add_from_file_1():
+    land_type_dict = dict(zip(file_1['地块名称'], file_1['地块类型']))
+    the_csv_to_be_appended['地块类型'] = the_csv_to_be_appended['种植地块'].map(land_type_dict)
+
+def add_from_file_2():
+    land_type_mapping1 = file_2.set_index(['作物名称', '地块类型', '种植季次']).to_dict()['亩产量/斤']
+    land_type_mapping2 = file_2.set_index(['作物名称', '地块类型', '种植季次']).to_dict()['种植成本/(元/亩)']
+    land_type_mapping3 = file_2.set_index(['作物名称', '地块类型', '种植季次']).to_dict()['销售单价/(元/斤)']
+
+    the_csv_to_be_appended['亩产量/斤'] = the_csv_to_be_appended.apply(lambda row: land_type_mapping1.get((row['作物名称'], row['地块类型'], row['种植季次'])), axis=1)
+    the_csv_to_be_appended['种植成本/(元/亩)'] = the_csv_to_be_appended.apply(lambda row: land_type_mapping2.get((row['作物名称'], row['地块类型'], row['种植季次'])), axis=1)
+    the_csv_to_be_appended['销售单价/(元/斤)'] = the_csv_to_be_appended.apply(lambda row: land_type_mapping3.get((row['作物名称'], row['地块类型'], row['种植季次'])), axis=1)
+    # (2) 智慧大棚第一季可种植的蔬菜作物及其亩产量、种植成本和销售价格均与普通大棚相同，表中省略。
+    # apply this logic to the data
+    for column in ['亩产量/斤', '种植成本/(元/亩)', '销售单价/(元/斤)']:
+        ordinary_rows = file_2[
+            (file_2['地块类型'] == '普通大棚') & 
+            (file_2['种植季次'] == '第一季')
+        ]
+
+        for idx, smart_row in the_csv_to_be_appended[
+            (the_csv_to_be_appended['地块类型'] == '智慧大棚') & 
+            (the_csv_to_be_appended['种植季次'] == '第一季')
+        ].iterrows():
+            matching_ordinary_row = ordinary_rows[
+                ordinary_rows['作物名称'] == smart_row['作物名称']
+            ]
+            if not matching_ordinary_row.empty:
+                the_csv_to_be_appended.at[idx, column] = matching_ordinary_row.iloc[0][column]
+            else:
+                # If no match is found, retain the existing data
+                the_csv_to_be_appended.at[idx, column] = smart_row[column]
+
+
+def calculate_expected_sales_volume():
+    the_csv_to_be_appended['预期销售量/斤'] = the_csv_to_be_appended['种植面积/亩'] * the_csv_to_be_appended['亩产量/斤']
+
+def calculate_average_price():
+    def get_average_price(price_range):
+        if price_range and '-' in price_range:
+            low, high = map(float, price_range.split('-'))
+            return (low + high) / 2
+        if price_range:
+            return float(price_range)
+        return None
+    
+    the_csv_to_be_appended['平均价格/元'] = the_csv_to_be_appended['销售单价/(元/斤)'].apply(get_average_price)
+
+
+if __name__ == '__main__':
+    add_from_file_1()
+    add_from_file_2()
+    calculate_expected_sales_volume()
+    calculate_average_price()
+    the_csv_to_be_appended.to_csv('full_table.csv', index=False, encoding='utf-8-sig')
+
+
+\end{lstlisting}
+
+
 \end{appendices}
 \end{document}
