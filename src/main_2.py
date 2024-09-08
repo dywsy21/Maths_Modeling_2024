@@ -1,7 +1,7 @@
 import pandas as pd
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, LpBinary
 import numpy as np
-from main_1_1 import *
+from main_1 import *
 import random
 
 def main(reduction_factor):
