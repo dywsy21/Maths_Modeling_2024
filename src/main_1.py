@@ -197,7 +197,7 @@ def main(reduction_factor, index):
             else:
                 land_seasons_dict[land] = ['第一季']
         crop_to_condition[row['作物名称']] = land_seasons_dict
-    print(crop_to_condition)
+    # print(crop_to_condition)
 
     for crop in crops:
         for region in regions:
@@ -238,7 +238,7 @@ def main(reduction_factor, index):
     # )
     
     linear_model.writeLP("model.lp")
-    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=300))
+    linear_model.solve(PULP_CBC_CMD(msg=1, timeLimit=1000))
 
 
     # for var in planting_decision.values():
@@ -268,10 +268,10 @@ def main(reduction_factor, index):
     output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
     output_df.to_excel('result_1_' + str(index) + '.xlsx', index=False)
 
-    for z in z_list:
-        print(z.varValue, end='')
+    # for z in z_list:
+        # print(z.varValue, end='')
 
 
 if __name__ == "__main__":
-    main(1, 1)
-    main(0.5, 2)
+    main(0.5, 2) # 第二小题
+    main(1, 1) # 第一小题

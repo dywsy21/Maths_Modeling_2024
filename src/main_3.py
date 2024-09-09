@@ -411,8 +411,8 @@ def main(reduction_factor):
     output_df = pd.DataFrame(output, columns=['作物名称', '地块编号', '种植季节','年份', '种植数量'])
     output_df.to_excel('result_1_' + str(index) + '.xlsx', index=False)
 
-    for z in z_list:
-        print(z.varValue, end='')
+    # for z in z_list:
+        # print(z.varValue, end='')
 
 
 if __name__ == "__main__":
